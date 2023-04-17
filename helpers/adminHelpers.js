@@ -455,7 +455,8 @@ async function getTotal(req, res) {
       },
     },
   ]);
-  const tot = result[0].grandTotal;
+  const tot = result[0]?.grandTotal;
+  
   
   return tot;
 }
