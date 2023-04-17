@@ -1,0 +1,155 @@
+<head>
+    <!-- Include jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
+    <!-- Include SweetAlert CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.0/dist/sweetalert2.min.css" />
+  
+    <!-- Include SweetAlert JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.0/dist/sweetalert2.min.js"></script>
+  </head>
+  
+  
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Products </h2>
+            <p>Add, edit or delete a product</p>
+            <a href="/admin/addproduct" class="btn btn-primary btn-sm rounded">Create new</a> 
+
+        </div>
+    </div>
+    <div class="card">
+            
+        <div class="card-body">
+            <!-- <a href="/admin/addproduct" class="btn btn-primary btn-sm rounded">Create new</a>  -->
+
+            <div class="row">
+                     <!-- <a href="/admin/addproduct" class="btn btn-primary btn-sm rounded">Create new</a>  -->
+
+                <!-- <div class="col-md-3">
+                    <form action="/admin/products" method="post">
+                        <div class="mb-4">
+                            <label for="name" class="form-label">Product Name</label>
+                            <input type="text" placeholder="Type here" class="form-control" name="product"/>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Parent Category</label>
+                            <select name="parent" class="form-select">
+                                <option>Mobile</option>
+                                <option>Laptop</option>
+                            </select>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary"><a href="/admin/addproduct"></a> Create product</button>
+                        </div>
+                    </form>-->
+                    
+                    <!-- <a href="/admin/addproduct" class="btn btn-primary btn-sm rounded">Create new</a> -->
+                </div> 
+                <div class="col-md-9">
+                    <div class="table-responsive">
+                        <!-- <a href="/admin/addproduct" class="btn btn-primary btn-sm rounded">Create new</a> -->
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>product Name</th>
+                                    <th>Description</th>
+                                    <th>Category</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Image</th>
+
+                                    <th>Action</th>
+                                    <th class="text-end"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for(var i = 0;i< productsData.length; i++) {%>
+                                <tr>
+                                    <td><%= i+1 %></td>
+                                    <td><%= productsData[i].itemName %></td>
+                                    <td><%= productsData[i].description %></td>
+                                    <td><%= productsData[i].category %></td>
+                                    <td><%= productsData[i].quantity %></td>
+                                    <td><%= productsData[i].price %></td>
+                                    <td><img src="/<%= productsData[i].images[0].path%>" alt="" srcset="" class="img-sm img-thumbnail" accept="image/*" multiple></td>
+                                    
+                                    
+                                    <td>
+                                        
+                                        <div>
+                                            <a class="text-primary" href="/admin/products/edit/<%= productsData[i].id%>" onclick="return confirm('Are sure to Edit the <%=productsData[i].id %> product' )">Edit</a>
+                                           
+                                        </div>
+                                    </td>
+                                    <td><div>
+                                        <script>
+                                            var value = "<%= productsData[i].id %>";
+                                            // Use the value variable in your JavaScript code
+                                            console.log(value);
+                                            </script>
+                                        <!-- <a class="text-danger" href="/admin/products/delete/<%= productsData[i].id%>" onclick="return confirm('Are you sure you want to  delete the <%= productsData[i].id %> ' )">Delete</a> -->
+                                        <a class="text-danger" href="javascript:;" onclick="deleteProduct(event,value )">Delete</a>
+
+                                    </div></td>
+                                </tr>
+                                <%}%>
+                            </tbody>
+                        </table>
+                    </div>
+                </div> <!-- .col// -->
+            </div> <!-- .row // -->
+        </div> <!-- card body .// -->
+    </div> <!-- card .// -->
+
+
+    <div class="pagination-area mt-30 mb-50">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-start">
+                <li class="page-item active"><a class="page-link" href="/admin/products?page=1">01</a></li>
+                <li class="page-item"><a class="page-link" href="/admin/products?page=2">02</a></li>
+                <li class="page-item"><a class="page-link" href="/admin/products?page=3">03</a></li>
+                <li class="page-item"><a class="page-link " href="/admin/products?page=4">04</a></li>
+                <!-- <li class="page-item"><a class="page-link" href="/admin/products?page=5">05</a></li> -->
+                
+
+                <!-- <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li> -->
+            </ul>
+        </nav>
+    </div>
+</section> <!-- content-main end// -->
+
+<script>
+function deleteProduct(event, id) {
+  event.preventDefault();
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'You will not be able to recover this product!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d39',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, delete it!',
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Send an AJAX request to delete the product with the given ID
+      $.ajax({
+        url: '/admin/products_delete/' + id,
+        type: 'DELETE',
+        success: function(result) {
+          // If the deletion is successful, redirect to the product list page
+          window.location.href = '/admin/products';
+        },
+        error: function(xhr, status, error) {
+          // If an error occurs, log it to the console
+          console.error(xhr.responseText);
+        }
+      });
+    }
+  });
+}
+
+</script>

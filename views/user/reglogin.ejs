@@ -1,0 +1,320 @@
+<head>
+  <!-- Include the toastr CSS and JavaScript files -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+</head>
+
+<div class="login-register-area pb-100 pt-95">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-12 offset-lg-2">
+        <div class="login-register-wrapper">
+          <div class="login-register-tab-list nav">
+            <a class="active" data-bs-toggle="tab" href="#lg1">
+              <h4>login</h4>
+            </a>
+            <a data-bs-toggle="tab" href="#lg2">
+              <h4>register</h4>
+            </a>
+          </div>
+
+          <div class="tab-content">
+            <div id="lg1" class="tab-pane active">
+              <div class="login-form-container">
+                <div class="login-register-form">
+                  <% if(locals.signinErr){%>
+                  <div>
+                    <p style="color: rgb(168, 26, 26); font-size: 17px">
+                      Sorry, THe account doesn't exist! Pls try signing up agian
+                    </p>
+                  </div>
+                  <%}%> <% if(locals.message){%>
+                  <div>
+                    <p style="color: rgb(255, 0, 0); font-size: 17px">
+                      Account created . Please  login with your credentials
+                    </p>
+                  </div>
+                  <%}%> <% if(locals.wrong){%>
+                  <div>
+                    <p style="color: rgb(224, 27, 27); font-size: 17px">
+                      Incorrect password or Email. Please login with correct
+                      credentails!!
+                    </p>
+                  </div>
+                  <%}%>
+                   <% if(locals.blocked){%>
+                  <div>
+                    <p style="color: rgb(239, 38, 38); font-size: 17px; font-weight: 400;" >
+                     Sorry! This account is blocked by Admin !
+                    </p>
+                  </div>
+                  <%}%>
+                  <form action="/signin" method="post" id="signupform">
+                    <input type="text" name="email" placeholder="E-mail" />
+                    <input
+                      type="password"
+                      name="password"
+                      placeholder="Password"
+                    />
+                    <div class="login-toggle-btn">
+                      <a href="#"></a>
+                    </div>
+                    <div class="button-box btn-hover">
+                      <button type="submit">Login</button>
+                      <a class="btn hover-border-radius" href="/otp"
+                        >LOGIN WITH OTP</a
+                      >
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div id="lg2" class="tab-pane">
+              <div class="login-form-container">
+                <div class="login-register-form">
+                  <form action="/signup" method="post">
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="First Name"
+                      onkeyup="validateName()"
+                      id="name"
+                      required=""
+                    />
+                    <span id="name-error" class="validation-label"></span>
+                    <input
+                      type="tel"
+                      id="number"
+                      name="contactNumber"
+                      placeholder="Your Mobile Number"
+                      onkeyup="validatePhone()"
+                      required=""
+                    />
+                    <span id="phone-error"></span>
+                    <!-- <input type="text"  placeholder=" Enter The OTP Code "  required=""> -->
+                    <!-- <input type="text"  placeholder=" send "  required=""> -->
+
+                    <input
+                      name="email"
+                      placeholder="Email"
+                      type="email"
+                      onkeyup="validateEmail()"
+                      required=""
+                      id="email"
+                    />
+                    <span id="email-error" class="validation-label"></span>
+                    <input
+                      type="password"
+                      id="password"
+                      name="password"
+                      placeholder="Password"
+                      onkeyup="validatePassword()"
+                      required=""
+                    />
+                    <span id="passError" class="validation-label"></span>
+
+                    <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    placeholder=" Confirm Password"
+                    onkeyup="validateConfirmPassword()"
+                    required=""
+                  />
+
+                  <span id="confirmPassError" class="validation-label">
+
+                  </span>
+                
+
+                    <div class="button-box btn-hover">
+                      <button
+                        type="submit"
+                        name="login"
+                        onclick="return validateForm()"
+                      >
+                        Register
+                      </button>
+                    </div>
+                  </form>
+                  <span id="submitError"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  var nameError = document.getElementById("name-error");
+  var emailError = document.getElementById("email-error");
+  var phoneError = document.getElementById("phone-error");
+  let passError = document.getElementById("pass-error");
+
+  function validateName() {
+    var name = document.getElementById("name").value;
+    var nameInput = document.getElementById("name");
+
+    if (name.length == 0 || name.length>9) {
+      nameError.innerHTML = "Enter Proper Name Please";
+      nameError.style.color = "red";
+      nameInput.style.border = "solid 2px red";
+      nameInput.style.fontWeight = "bold"
+      return false;
+    }
+    if (!name.match(/^[A-Za-z]{3,}$/)) {
+      nameError.innerHTML = "Write valid name";
+      nameError.style.color = "red";
+      nameError.style.fontWeight="bold"
+      nameInput.style.border = "solid 2px red";
+      // nameInput.style.fontWeight = "bold";
+
+      return false;
+    }
+    nameError.innerHTML = "";
+    // nameError.innerHTML = "Valid Name";
+    nameError.style.color = "green";
+    nameInput.style.border = "solid 2px green";
+
+    return true;
+  }
+  function validateEmail() {
+    var email = document.getElementById("email").value;
+    var emailInput = document.getElementById("email");
+
+    if (email.length == 0) {
+      emailError.innerHTML = "Email is required";
+      emailError.style.color = "red";
+      emailError.style.fontWeight="bold"
+      emailInput.style.border = "solid 2px red";
+      // emailInput.style.fontWeight = "bold";
+
+
+      return false;
+    }
+    if (!email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) {
+      emailError.innerHTML = "Email invalid";
+      emailError.style.color = "red";
+      
+      emailError.style.fontWeight="bold"
+      emailInput.style.border = "solid 2px red";
+      // emailInput.style.fontWeight = "bold";
+
+
+      return false;
+    }
+    emailError.innerHTML = "";
+    emailError.style.color = "red";
+    emailError.style.fontWeight="bold"
+    emailInput.style.border = "solid 2px green";
+    return true;
+  }
+  function validatePhone() {
+    var phone = document.getElementById("number").value;
+    var phoneInput = document.getElementById("number");
+
+    if (phone.length < 10) {
+      phoneError.innerHTML = "phone number is required";
+      phoneError.style.color = "red";
+      phoneError.style.fontWeight="bold";
+
+      phoneInput.style.border = "solid 2px red";
+      // phoneInput.style.fontWeight = "bold"
+      return false;
+    }
+    if (!phone.match(/^\d{10}$/)) {
+      phoneError.innerHTML = "Enter valid number";
+      phoneError.style.color = "red";
+      phoneError.style.fontWeight="bold";
+      // phoneInput.style.border = "solid 2px red";
+
+      return false;
+    }
+    phoneError.innerHTML = "";
+    phoneError.style.color = "green";
+    phoneInput.style.border = "solid 2px green";
+    return true;
+  }
+  
+
+  function validatePassword() {
+  let password = document.getElementById("password").value;
+  let passwordInput = document.getElementById("password");
+  let passError = document.getElementById("passError");
+
+  if (password.length == 0) {
+    passError.innerHTML = "Invalid password";
+    passError.style.color = "red";
+    passwordInput.style.border = "solid 2px red";
+    return false;
+  } else if (!password.match(/[a-zA-Z]/)) {
+    passError.innerHTML = "Password must contain atleast 1 letter";
+    passError.style.color = "red";
+    passError.style.fontWeight="bold"
+    passwordInput.style.border = "solid 2px red";
+    return false;
+  } else if (!password.match(/^.{3,}$/)) {
+    passError.innerHTML = "Password min-length 3";
+    passError.style.color = "red";
+    passwordInput.style.border = "solid 2px red";
+    return false;
+  } else if (!password.match(/^(?=.*[\W_])[\w\W]/)) {
+    passError.innerHTML =
+      "Password must contain atleast one special character";
+    passError.style.color = "red";
+    passwordInput.style.border = "solid 2px red";
+    return false;
+  } else {
+    passError.innerHTML = "Password is valid";
+    passError.style.color = "green";
+    passwordInput.style.border = "solid 2px green";
+    return true;
+  }
+}
+function validateConfirmPassword(){
+  let password = document.getElementById("password").value;
+  let confirmPassword = document.getElementById("confirmPassword").value;
+  let confirmPasswordInput = document.getElementById("confirmPassword");
+  let confirmPassError = document.getElementById("confirmPassError");
+
+  if (confirmPassword.length == 0) {
+    confirmPassError.innerHTML = "Please re-enter the password";
+    confirmPassError.style.color = "red";
+    confirmPasswordInput.style.border = "solid 2px red";
+    return false;
+  } else if (password !== confirmPassword) {
+    confirmPassError.innerHTML = "Passwords do not match";
+    confirmPassError.style.color = "red";
+    confirmPasswordInput.style.border = "solid 2px red";
+    return false;
+  } else {
+    confirmPassError.innerHTML = "Passwords match";
+    confirmPassError.style.color = "green";
+    confirmPassError.style.fontWeight = "bold";
+
+    confirmPasswordInput.style.border = "solid 2px green";
+    return true;
+  }
+
+}
+  function validateForm() {
+    if (!validateName() || !validateEmail() || !validatePhone() || !validatePassword() || validateConfirmPassword()) {
+      submitError.style.display = "block";
+      submitError.innerHTML = "Please fix all errors to submit.";
+      setTimeout(function () {
+        submitError.style.display = "none";
+      }, 3000);
+      return false;
+    }else{
+      toastr.success('Account successfully created');
+    return true;
+    }
+  }
+
+  setTimeout(function () {
+    document.querySelector(".message").style.display = "none";
+  }, 3000);
+</script>

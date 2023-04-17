@@ -1,0 +1,130 @@
+<div class="card-body">
+    <div class="col-search">
+        <form class="searchform">
+            <div class="input-group">
+                <input list="search_terms" type="text" class="form-control" placeholder="Search Here">
+                <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i></button>
+            </div>
+
+<section class="content-main">     
+    <div class="card">
+        
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th scope="col">Order ID</th>
+                            <!-- <th scope="col">Name</th> -->
+                            <th scope="col">Total</th>
+                            <th scope="col">Status</th> 
+                            <th scope="col">Action</th>
+                            <th>More Details</th>
+                            <th scope="col" class="text-end"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <%for(var i = 0 ; i< orderData.length ; i++){%>
+                    <form action="/admin/order/<%=orderData[i].id%>" method="post" id="form<%=i+1%>">
+                        <tr>
+                            <td><%=i+1%></td>
+                            <td> <strong><%=(orderData[i].id)%> </strong> </td>
+                            
+                            
+                            
+                           <strong> <td> <%=orderData[i].totalPrice.toLocaleString('en-IN', { maximumFractionDigits: 2, style: 'currency', currency: 'INR' })%></td></strong>
+
+                            <td>
+                            <%if(orderData[i].orderStatus=== "delivered"){%>
+                            <span class="badge rounded-pill alert-success">Delivered</span>
+                                <%}else if(orderData[i].orderStatus=== "processing"){%>
+                            <span class="badge rounded-pill alert-primary">Processing</span>
+                            <%}else if(orderData[i].orderStatus=== "shipped"){%>
+                            <span class="badge rounded-pill alert-warning">Shipped</span>
+                                <%}else if(orderData[i].orderStatus=== "cancelled"){%>
+                            <span class="badge rounded-pill alert-danger">Cancelled</span>
+                            <%}%>
+                            
+                            </td>
+                            <td>
+                                <form action="/admin/order/<%=orderData[i].id%>" method="post">
+                                <div class="dropdown">
+                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <span>Change Status </span> <i class="material-icons md-more_horiz"></i> </a>
+                                    <div class="dropdown-menu">
+                                        <input type="text" id="<%=i+1 %>" name="status" value="" style="display: none;">
+                                        <a class="dropdown-item" href="#" onclick="document.getElementById('<%=i+1%>').value = 'processing';document.getElementById('form<%=i+1%>').submit();">Processing</a>
+                                        <a class="dropdown-item" href="#" onclick="document.getElementById('<%=i+1%>').value = 'shipped';document.getElementById('form<%=i+1%>').submit();">Shipped</a>
+                                        <a class="dropdown-item " href="#" onclick="document.getElementById('<%=i+1%>').value = 'delivered';document.getElementById('form<%=i+1%>').submit();">Delivered</a>
+                                        <a class="dropdown-item " href="#" onclick="document.getElementById('<%=i+1%>').value = 'cancelled';document.getElementById('form<%=i+1%>').submit();">Cancelled</a>
+                                    </div>
+                                </div>
+                            </form>
+                                
+                            </td>
+                            <td>
+                                <a href="/admin/order/details/<%=orderData[i].id%>" class="btn btn-md rounded font-sm">Detail</a>
+  
+                            </td>
+                            <td class="text-end">
+                                <%if(!orderData[i].orderStatus=== "delivered"){%>
+                                <%if(orderData[i].cancellationrequest){%> <span class="text-danger">User raised Cancellation request</span><%}%>
+                                <%}else{%>
+                                <%if(orderData[i].returnRequest){%> <span class="text-danger"> User raised Return request </span> <%}%>
+                                <%}%>
+                            </td>
+                        </tr>
+                    </form>
+                    <%}%>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    </tbody>
+                </table>
+            </div> 
+        </div> 
+    </div>
+    
+    <div class="pagination-area mt-30 mb-50">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-start">
+                <li class="page-item active"><a class="page-link" href="/admin/orderlist?page=1">01</a></li>
+                <li class="page-item"><a class="page-link" href="/admin/orderlist?page=2">02</a></li>
+                <li class="page-item"><a class="page-link" href="/admin/orderlist?page=3">03</a></li>
+                <li class="page-item"><a class="page-link " href="/admin/orderlist?page=4">04</a></li>
+                <li class="page-item"><a class="page-link" href="/admin/orderlist?page=5">05</a></li>
+                <li class="page-item"><a class="page-link" href="/admin/orderlist?page=6">06</a></li>
+
+                <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
+            </ul>
+        </nav>
+    </div>
+</section> 
+
+
+<script>
+    function setStatus(status) {
+      document.getElementById('status<%= i+1 %>').value = status;
+      document.getElementById('orderForm<%= i+1 %>').submit();
+    }
+
+
+    function showConfirmation(status, id) {
+  swal({
+    title: "Are you sure?",
+    text: "Do you want to change the status to " + status + "?",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  })
+  .then((willChange) => {
+    if (willChange) {
+      document.getElementById(id).value = status;
+      document.getElementById('form'+id).submit();
+    }
+  });
+}
+  </script>

@@ -1,0 +1,99 @@
+<div class="cart-area pt-100 pb-100">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <form action="#">
+                    <div class="cart-table-content">
+                        <div class="table-content table-responsive">
+                            <% if (!locals.message) { %>
+                                <p>The Cart is Empty</p>
+                            <% } else { %>
+                                
+                            
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th class="width-thumbnail"></th>
+                                        <th class="width-name">Product</th>
+                                        <th class="width-price"> Price</th>
+                                        <th class="width-quantity">Quantity</th>
+                                        <th class="width-subtotal">Sub-Total</th>
+                                        <th class="width-remove"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <%for(let i=0;i<cartItems.length;i++){%>
+                                        <td class="product-thumbnail">
+                                            <a href="#"><img src="\<%= cartItems[i].images[0].path%>" alt=""></a>
+                                        </td>
+                                        <td class="product-name">
+                                            <h5><a href="/products/<%=cartItems[i].id%>"><%=cartItems[i].itemName%></a></h5>
+                                        </td>
+                                        <td class="product-cart-price"><span class="amount"><%=cartItems[i].price%></span></td>
+                                                                                
+                                        <td class="product-cart-price"><span class="amount"><%=cartItems[i].quantity%></span></td>
+                                        <td class="product-total"><span><%=cartItems[i].subtotal%></span></td>
+                                        <td class="product-remove"><a href="/cart/removeitem/<%=cartItems[i].id%>"><i class=" ti-trash "></i></a></td>
+                                    </tr>
+                                    
+                                    <% } %>
+                                </tbody>
+                            </table>
+
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="cart-shiping-update-wrapper">
+                                <div class="cart-shiping-update btn-hover">
+                                    <a href="/shop">Continue Shopping</a>
+                                </div>
+                                <div class="cart-clear-wrap">
+                                   
+                                    <%if(message){%>
+                                        <%if(cartItems.length != 0){%>
+                                    <div class="cart-clear btn-hover">
+                                        <a href="/deletecart">Clear Cart</a>
+                                    </div>
+
+                                    <%}%>
+                                <%}%>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-12">
+              
+            </div>
+           
+            <%if(message){%>
+                <%if(cartItems.length != 0){%>
+
+            <div class="col-lg-4 col-md-12 col-12">
+                <div class="grand-total-wrap">
+                    <div class="grand-total-content">
+                        <!-- <h3>Subtotal <span> -->
+
+                        </span></h3>
+                       
+                        
+                        <div class="grand-total">
+                            <h4>Total <span>Rs<%=totalPrice%></span></h4>
+                        </div>
+                    </div>
+                    <div class="grand-total-btn btn-hover">
+                        <a class="btn theme-color" href="/address">Proceed to checkout</a>
+                    </div>
+                </div>
+            </div>
+            <%}%>
+            <%}%>
+        </div>
+    </div>
+</div>

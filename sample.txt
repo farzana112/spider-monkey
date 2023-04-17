@@ -1,0 +1,161 @@
+
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+<script src="https://unpkg.com/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+<section class="">
+  <div class="container d-flex justify-content-center">
+    <div class="row w-75 mt-5">
+      <div class="col-md-12">
+        <h2 class="text-center">Add Banner</h2>
+        <form
+          name="myform"
+          action="/add-banner"
+          method="POST"
+          enctype="multipart/form-data"
+          id="form"
+        >
+          <label for="">Title</label>
+
+          <input
+            type="text"
+            name="title"
+            class="form-control"
+            id="title"
+            required
+            onkeyup="validateTitle()"
+          />
+          <span id="title-error" class="validation-label"></span>
+          <div></div>
+
+          <label for="">Description</label>
+          <input
+            type="text"
+            name="description"
+            class="form-control"
+            id="description"
+            required
+            onkeyup="validateDescription()"
+          />
+          <span id="description-error" class="validation-label"></span>
+          <div></div>
+
+          <label for="">Link</label>
+          <input
+            type="text"
+            name="link"
+            class="form-control"
+            id="link"
+            required
+            onkeyup="validateLink()"
+          />
+          <span id="link-error" class="validation-label"></span>
+          <div></div>
+          <label for="">Image</label>
+          <input
+            type="file"
+            name="image"
+            class="form-control"
+            id="image"
+            required
+            onkeyup="validateImage()"
+          />
+          <span id="image-error" class="validation-label"></span>
+
+          <button
+            type="submit"
+            class="btn btn-success mt-4"
+          
+          >
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function validateTitle() {
+    const titleField = document.getElementById("title");
+    const titleValue = titleField.value.trim();
+    const errorDiv = document.getElementById("title-error");
+  const form = document.getElementById('form');
+
+
+    if (titleValue.length === 0) {
+      errorDiv.textContent = "(Title cannot be empty!)";
+      errorDiv.style.color = "red";
+      errorDiv.style.fontWeight = "bold";
+
+      titleField.setCustomValidity("(Title cannot be empty!)");
+    } else {
+      errorDiv.textContent = "";
+      titleField.setCustomValidity("");
+    }
+  }
+
+  function validateDescription() {
+    const descriptionField = document.getElementById("description");
+    const descriptionValue = descriptionField.value.trim();
+    const errorDiv = document.getElementById("description-error");
+    errorDiv.style.color = "red";
+    errorDiv.style.fontWeight = "bold";
+
+    if (descriptionValue.length === 0) {
+      errorDiv.textContent = "(Description cannot be empty...)";
+      descriptionField.setCustomValidity("Description cannot be empty");
+    } else {
+      errorDiv.textContent = "";
+      descriptionField.setCustomValidity("");
+    }
+  }
+
+  function validateLink() {
+    const linkField = document.getElementById("link");
+    const linkValue = linkField.value.trim();
+    const errorDiv = document.getElementById("link-error");
+    errorDiv.style.color = "red";
+    errorDiv.style.fontWeight = "bold";
+
+    if (linkValue.length === 0) {
+      errorDiv.textContent = "Link cannot be empty";
+      linkField.setCustomValidity("Link cannot be empty");
+    } else {
+      errorDiv.textContent = "";
+      linkField.setCustomValidity("");
+    }
+  }
+  function validateImage() {
+    const imageField = document.getElementById("image");
+    const imageFile = imageField.files[0];
+    const errorDiv = document.getElementById("image-error");
+    errorDiv.style.color = "red";
+    errorDiv.style.fontWeight = "bold";
+    if (!imageFile) {
+      errorDiv.textContent = "Image is required";
+      imageField.setCustomValidity("Image is required");
+    } else if (!/\.(jpe?g|png|gif)$/i.test(imageFile.name)) {
+      errorDiv.textContent =
+        "Invalid file type. Please select a JPEG, PNG, or GIF image";
+      imageField.setCustomValidity(
+        "Invalid file type. Please select a JPEG, PNG, or GIF image"
+      );
+    } else {
+      errorDiv.textContent = "";
+      imageField.setCustomValidity("");
+    }
+  }
+
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!validateTitle() ||!validateDescription ||!validateImage||!validateLink) {
+    
+      return false;
+    } else {
+      form.submit();
+    }
+  });
+</script>

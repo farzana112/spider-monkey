@@ -1,0 +1,145 @@
+<style>
+    .page-item.active .page-link {
+  background-color: rgb(235, 138, 11);
+  
+}
+</style>
+  
+  
+
+
+<div class="shop-area shop-page-responsive pt-100 pb-100">
+  <div class="container">
+      <div class="row flex-row-reverse">
+          <div class="col-lg-9">
+              <div class="shop-topbar-wrapper mb-40">
+                  <div class="shop-topbar-left">
+                      <div class="showing-item">
+                          
+                      </div>
+                  </div>
+                
+              </div>
+              <div class="shop-bottom-area">
+                  <div class="tab-content">
+                      
+                      <div id="shop-2" class="tab-pane active">
+                          <%for(var i = 0 ; i<response.length;i++){%>
+                          <div class="shop-list-wrap mb-30" data-aos="fade-up" data-aos-delay="200">
+                              <div class="row">
+                                  <div class="col-lg-4 col-sm-5">
+                                      <div class="product-list-img">
+                                          <a href="/products/<%=response[i].id%>">
+                                              <img src="\<%=response[i].images[0].path%>" alt="Product Style">
+                                          </a>
+                                          <div class="product-list-badge badge-right badge-pink">
+                                              
+                                          </div>
+                                          
+                                      </div>
+                                  </div>
+                                  <div class="col-lg-8 col-sm-7">
+                                      <div class="shop-list-content">
+                                          <!-- <h3><a href="" <%= response[i].itemName%></a></h3> -->
+                                          <h3><a href="/products/<%=response[i].id%>"><%= response[i].itemName %></a></h3>
+
+                                          <div class="product-price">
+                                              
+                                              <span class="new-price">₹ <%=response[i].price%></span>
+                                          </div>
+                                          <div class=" product-category"><strong>Category  :   </strong>
+                                               <span class="category"><%=response[i].category%></span>
+                                          </div>
+                                          <p><%=response[i].description%>.</p>
+                                          <div class="product-list-action">
+                                              <!-- <button class="product-action-btn-3" title="Add to cart"><i class="pe-7s-cart"></i></button> -->
+                                              <form action="/add_to_wishlist/<%=response[i].id%>" method="POST">
+                                              <button type="submit" class="product-action-btn-3" title="Wishlist"><i class="pe-7s-like"></i></button>
+                                            </form>
+                                              <!-- <button class="product-action-btn-3" title="Compare"><i class="pe-7s-shuffle"></i></button> -->
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <%}%>
+                          
+                          
+                      </div>
+                     
+                  </div>
+              </div>
+          </div>
+          <div class="col-lg-3">
+              <div class="sidebar-wrapper">
+                  <div class="sidebar-widget mb-40" data-aos="fade-up" data-aos-delay="200">
+                      
+                  </div>
+                  <div class="sidebar-widget sidebar-widget-border mb-40 pb-35" data-aos="fade-up" data-aos-delay="200">
+                      <div class="sidebar-widget-title mb-30">
+                          <h3>Filter By Price</h3>
+                      </div>
+                      <form action="/sort" method="POST">
+                      <div class="price-filter">
+                          <div id="slider-range"></div>
+                          <div class="price-slider-amount">
+                              <div class="label-input">
+                                  <label>Price:(INR)</label>
+                                  <input type="text" id="amount" name="price" placeholder="Add Your Price" onscroll="filterByPrice()" />
+                              </div>
+                              <button type="button">Filter</button>
+                          </div>
+                      </div>
+                    </form>
+                  </div>
+                  <div class="sidebar-widget sidebar-widget-border mb-40 pb-35" data-aos="fade-up" data-aos-delay="200">
+                      <div class="sidebar-widget-title mb-25">
+                          <h3>Product Categories</h3>
+                      </div>
+                      <div class="sidebar-list-style">
+                          <ul>   <form action="/category" method="POST">
+
+                            <div>
+                                <% for (var i = 0; i < parentData.length; i++) { %>
+                                  <li>
+                                    <button style="background-color: rgba(249, 105, 8, 0.772); color: white; border:none;" type="submit" name="category" value="<%= parentData[i].category %>">
+                                      <%= parentData[i].category %>
+                                      <span></span>
+                                    </button>
+                                  </li>
+                                <% } %>
+                              </div>
+                              
+
+                              
+                            </form>
+                          </ul>
+                      </div>
+                  </div>
+                  
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="pagination-area mt-30 mb-50">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item active"><a class="page-link" href="/shop?page=1">01</a></li>
+            <li class="page-item"><a class="page-link" style="color: rgb(18, 12, 12);" href="/shop?page=2">02</a></li>
+            <li class="page-item"><a class="page-link" style="color: rgb(18, 12, 12);" href="/shop?page=3">03</a></li>
+            <li class="page-item"><a class="page-link " style="color: rgb(18, 12, 12);" href="/shop?page=4">04</a></li>
+            <li class="page-item"><a class="page-link" style="color: rgb(18, 12, 12);"  href="/shop?page=5">05</a></li>
+            <li class="page-item"><a class="page-link" style="color: rgb(18, 12, 12);" href="/shop?page=6">06</a></li>
+
+            <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
+        </ul>
+    </nav>
+</div>
+</div>
+
+<script>
+   const filterByPrice=()=>{
+    const value=document.getElementById('amount').value
+    console.log(value);
+   }
+</script>

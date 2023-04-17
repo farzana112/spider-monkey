@@ -1,0 +1,189 @@
+
+    <head>
+        <!-- Include SweetAlert CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.0/dist/sweetalert2.min.css" />
+  
+    <!-- Include SweetAlert JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.0/dist/sweetalert2.min.js"></script>
+  </head>
+  
+      </head>
+      
+<section class="content-main">
+    <div class="row">
+        <div class="col-6">
+            <div class="content-header">
+                <h2 class="content-title">Add New Product</h2>
+                  
+            </div>
+        </div>
+    </div>
+    <form action="/admin/addproduct" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6>General info</h6>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="mb-4">
+                                <label class="form-label">Product title</label>
+                                <input type="text" placeholder="Type here" class="form-control" name="itemName" onkeyup="validateTitle()" required>
+                                <span class="error-message" id="titleErrorLabel" style="display:none;">(Please enter a valid title....)</span>
+                                
+                            </div>
+                           
+        
+                        </div>  <!--col.// -->
+                    </div> <!-- row.// -->
+                    
+                    <hr class="mb-4 mt-0">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6>Category</h6>
+                        </div>
+                        <div class="col-md-9">
+                            <label class="form-label">Mention the Category</label>
+                            <!-- <input type="text" placeholder="Enter the Category" class="form-control" name="category">
+                             -->
+                             <select class="form-control" name="category">
+                                <% for (let i = 0; i < parentData.length; i++) { %>
+                                  <option value="<%= parentData[i].category %>"><%= parentData[i].category %></option>
+                                <% } %>
+                              </select>
+                        </div>
+                        <div class="col-md-9">
+                           
+                        </div>  <!--col.// -->
+                    </div> <!-- row.// -->
+                    <hr class="mb-4 mt-0">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6>Pricing</h6>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="mb-4">
+                                <label class="form-label">Cost in Rupees</label>
+                                <input type="text" placeholder="Rs.0.0" class="form-control" name="price" id="price-input" onkeyup="validatePrice()" required>
+                                <span class="error-message" id="price-error" style="display:none;">Please enter a valid price.</span>
+                            </div>
+                        </div> <!-- col.// -->
+                    </div> <!-- row.// -->
+                    <hr class="mb-4 mt-0">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6>Description</h6>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="mb-4">
+                                <label class="form-label">Details</label>
+                                <input type="text" placeholder="...." class="form-control" id="description" name="description" required onkeyup="validateDescription()">
+                                <span class="error-message" id="description-error" style="display:none;">Please Enter a Valid Description</span>
+                            </div>
+                        </div> <!-- col.// -->
+                    </div> <!-- row.// -->
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6>Quantity</h6>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="mb-4">
+                                <label class="form-label">Details</label>
+                                <input type="text" placeholder="...." class="form-control" name="quantity" required >
+                            </div>
+                        </div> <!-- col.// -->
+                    </div> 
+                    
+                    <hr class="mb-4 mt-0">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6>Media</h6>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="mb-4">
+                                <label class="form-label">Images</label>
+                                <input class="form-control" type="file" name="images" accept="image/*" multiple required onkeyup="validateImages()" >
+                                 <span class="error-message" id="image-errors" style="display:none;">Please enter a valid image.</span>
+
+                            </div>
+                        </div> 
+                    </div> 
+                    <div class="row">
+                        <div class="col-md-3">
+                            
+                        </div>
+                        <div class="col-md-9">
+                            <div class="mb-4">
+                                <button type="submit" class="btn btn-primary btn-sm rounded" onclick="return validateForm()">Submit</button>
+                            </div>
+                        </div> <!-- col.//-->
+                    </div> <!--.row end// -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+<span id="submit-error"></span>
+    </div>
+</section> 
+
+
+<script>
+    function validateForm() {
+    // validate title
+    var title = document.getElementsByName("itemName")[0].value;
+    if (title.trim() == "") {
+        document.getElementById("titleErrorLabel").style.display = "block";
+        document.getElementById("titleErrorLabel").style.color = "red";
+        swal("Error", "Please fix all errors to submit the form", "error");
+    return false;
+
+        return false;
+    }
+    
+    // validate price
+    var price = document.getElementById("price-input").value;
+    if (price == "" || isNaN(price) || parseFloat(price) <= 0) {
+        document.getElementById("price-error").style.display = "block";
+        document.getElementById("price-error").style.color="red";
+        swal("Error", "Please fix all errors to submit the form", "error");
+    return false;
+
+        return false;
+    }
+    
+    // validate description
+    var description = document.getElementsByName("description")[0].value;
+    if (description.trim() == "") {
+        document.getElementById("description-error").style.display = "block";
+        document.getElementById("description-error").style.color = "red";
+        swal("Error", "Please fix all errors to submit the form", "error");
+    return false;
+
+
+        return false;
+    }
+    
+    // validate images
+    var images = document.getElementsByName("images")[0].value;
+    var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+    if (images.trim() == "") {
+        document.getElementById("image-errors").style.display = "block";
+        swal("Error", "Please fix all errors to submit the form", "error");
+    return false;
+        return false;
+    }
+    if (!allowedExtensions.exec(images)) {
+    document.getElementById("image-errors").innerHTML = "Please upload a valid image file (jpg, jpeg, png, gif)";
+    document.getElementById("image-errors").style.display = "block";
+    swal("Error", "Please fix all errors to submit the form", "error");
+    return false;
+    return false;
+}
+    return true;
+}
+
+</script>

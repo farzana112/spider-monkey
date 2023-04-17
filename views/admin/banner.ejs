@@ -1,0 +1,143 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<main>
+    <section>
+      <div class="container d-flex justify-content-center">
+        <div class="row w-75 mt-5">
+          <div class="col-md-12">
+            <form action="" id="banner-form" enctype="multipart/form-data">
+              <div>
+                <label for="title">Title:</label>
+                <input type="text" name="title" id="title" class="form-control" onclick="validateTitle()" required>
+                <span id="title-error" class="validation-label"></span>
+              </div>
+            
+              <div>
+                <label for="description">Description:</label>
+                <input type="text" name="description" id="description" class="form-control" onclick="validateDescription()" required>
+                <span id="description-error" class="validation-label"></span>
+              </div>
+            
+              <div>
+                <label for="link">Link:</label>
+                <input type="text" name="link" id="link" class="form-control" onclick="validateLink()" required>
+                <span id="link-error" class="validation-label"></span>
+              </div>
+            
+              <div>
+                <label for="image">Image:</label>
+                <input type="file" name="image" id="image" class="form-control" onclick="validateImage()" required>
+                <span id="image-error" class="validation-label"></span>
+              </div>
+            
+              <div>
+                <button type="submit" class="btn btn-success text-white">Submit</button>
+               
+              </div>
+            </form>
+            
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script>
+    
+  
+     function validateTitle() {
+      const titleField = document.getElementById("title");
+      const titleValue = titleField.value.trim();
+      const errorDiv = document.getElementById("title-error");
+      const form = document.getElementById("form");
+  
+      if (titleValue.length === 0) {
+        errorDiv.textContent = "(Title cannot be empty!)";
+        errorDiv.style.color = "red";
+        errorDiv.style.fontWeight = "bold";
+  
+        titleField.setCustomValidity("(Title cannot be empty!)");
+      } else {
+        errorDiv.textContent = "";
+        titleField.setCustomValidity("");
+      }
+    } 
+    function validateDescription() {
+      const descriptionField = document.getElementById("description");
+      const descriptionValue = descriptionField.value.trim();
+      const errorDiv = document.getElementById("description-error");
+      errorDiv.style.color = "red";
+      errorDiv.style.fontWeight = "bold";
+  
+      if (descriptionValue.length === 0) {
+        errorDiv.textContent = "(Description cannot be empty...)";
+        descriptionField.setCustomValidity("Description cannot be empty");
+      } else {
+        errorDiv.textContent = "";
+        descriptionField.setCustomValidity("");
+      }
+    }
+  
+    function validateLink() {
+      const linkField = document.getElementById("link");
+      const linkValue = linkField.value.trim();
+      const errorDiv = document.getElementById("link-error");
+      errorDiv.style.color = "red";
+      errorDiv.style.fontWeight = "bold";
+  
+      if (linkValue.length === 0) {
+        errorDiv.textContent = "Link cannot be empty";
+        linkField.setCustomValidity("Link cannot be empty");
+      } else {
+        errorDiv.textContent = "";
+        linkField.setCustomValidity("");
+      }
+    }
+    function validateImage() {
+      const imageField = document.getElementById("image");
+      const imageFile = imageField.files[0];
+      const errorDiv = document.getElementById("image-error");
+      errorDiv.style.color = "red";
+      errorDiv.style.fontWeight = "bold";
+      if (!imageFile) {
+        errorDiv.textContent = "Image is required";
+        imageField.setCustomValidity("Image is required");
+      } else if (!/\.(jpe?g|png|gif)$/i.test(imageFile.name)) {
+        errorDiv.textContent =
+          "Invalid file type. Please select a JPEG, PNG, or GIF image";
+        imageField.setCustomValidity(
+          "Invalid file type. Please select a JPEG, PNG, or GIF image"
+        );
+      } else {
+        errorDiv.textContent = "";
+        imageField.setCustomValidity("");
+      }
+    }
+
+    $(document).ready(function() {
+  $('#banner-form').submit(function(event) {
+    event.preventDefault();
+    var formData = new FormData($(this)[0]);
+    console.log(formData);
+    $.ajax({
+      url: '/admin/post-banner', //replace with your server-side script URL
+      type: 'POST',
+      data: formData,
+      async: false,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function(response) {
+        // alert(response); //show success message
+        location.href = "/admin/list-banner"
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log("Error: ", textStatus, errorThrown);
+        // show error message
+        // alert("Error: " + textStatus + ", " + errorThrown);
+      }
+    });
+  });
+});
+  </script> 
+  
+  

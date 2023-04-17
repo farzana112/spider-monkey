@@ -1,0 +1,787 @@
+const { v4: uuidv4 } = require("uuid");
+const bcrypt = require("bcrypt");
+
+const userModel = require("../models/userSchema");
+const productModel = require("../models/productsSchema");
+const cartModel = require("../models/cartSchema");
+const addressModel = require("../models/addressSchema");
+const orderModel = require("../models/orderSchema");
+const wishModel=require("../models/wishSchema")
+const parentModel=require("../models/parentSchema")
+const categoryModel=require("../models/categorySchema")
+const bannerModel=require("../models/bannerSchema")
+const notifier = require("node-notifier");
+const toastr = require("toastr");
+const jquery = require("jquery");
+const { JSDOM } = require("jsdom");
+// const notifier = require('node-notifier');
+
+
+const SCERET = process.env.SCERET;
+const {
+  shopProduct,
+  forOneProduct,
+} = require("../controllers/userControllers");
+let otpgen, otp;
+
+async function signup(req, res) {
+  const { name, email, contactNumber, password } = req.body;
+  // Checking the existing user
+  const existingUser = await userModel
+    .findOne({ email: email })
+    .catch((error) =>
+      console.log(
+        `Error at finding the email id form the DB, refer the error : ${error}`
+      )
+    );
+  if (existingUser) {
+    return false;
+  }
+
+  let pass = password.toString();
+  const hashedPassword = await bcrypt.hash(pass, 10);
+  //User Creation
+  const newUser = await userModel.create({
+    id: uuidv4(),
+    name: name,
+    email: email,
+    hashedPassword: hashedPassword,
+    contactNumber: contactNumber,
+  });
+  console.log("new user!");
+  console.log(newUser);
+  return newUser;
+}
+
+/*async function signup(req,res){
+
+  const {name,email,contactNumber,password} = req.body;
+// Checking the existing user
+  const existingUser = await userModel.findOne({$or:[{email:email}]})
+                                      .catch(error=>console.log(`Error at finding the email id form the DB, refer the error : ${error}`))
+  if(existingUser){
+
+      return false
+  }
+
+      let pass = password.toString();
+      const hashedPassword = await bcrypt.hash(pass,10);
+//User Creation
+      const newUser = await userModel.create({
+          id: uuidv4(),
+          name : name,
+          email : email,
+          hashedPassword : hashedPassword,
+          contactNumber : contactNumber,
+      });
+     //console.log(newUser)
+    return newUser
+
+}*/
+
+async function signin(req, res) {
+  
+  let email = req.body.email;
+  let password = req.body.password;
+  ;
+
+  const existingUser = await userModel
+    .findOne({ email: email })
+    .catch((error) =>
+      console.log(
+        `Error at finding the email id from the DB, refer the error : ${error}`
+      )
+    );
+  if (!existingUser) {
+    return false;
+  } else if (existingUser.blocked) {
+    return true;
+  } else {
+    
+
+    let pass = password.toString();
+    const matchPassword = await bcrypt.compare(
+      pass,
+      existingUser.hashedPassword
+    );
+    
+    if (matchPassword) {
+      return existingUser;
+    } else {
+      let wrong = "Wrong Password Or E-mail";
+      return wrong;
+    }
+  }
+}
+
+
+
+//otp
+
+async function loginOtp(contactNumber) {
+  const user = await userModel
+    .findOne({ contactNumber: contactNumber })
+    .catch((error) =>
+      console.log(
+        `Error at finding the phone number id form the DB, refer the error : ${error}`
+      )
+    );
+
+  if (!user) {
+    return false;
+  } else if (user.blocked) {
+    return true;
+  } else {
+    // console.log("User      :    " + user);
+    return user;
+  }
+}
+
+function sendOTP(req, res) {
+  /*const accountSid = "ACeb5bb83b2702e34b066334b18e2034d3";
+  const authToken = "8338bce61af5e0ea3be6f201c698d256";
+  const client = require("twilio")(accountSid, authToken);
+  otpgen = Math.floor(1000 + Math.random() * 9000);
+
+  client.messages
+    .create({
+      body: `your otp is ${otpgen}`,
+      from: "+14308085738",
+      to: "+918089110473",
+    })
+    .then((message) => console.log(message.sid));*/
+}
+
+//verify otp login post method
+
+
+
+async function shopListProduct(pageNum,perPage) {
+  try {
+
+    const response = await productModel.find().skip((pageNum - 1) * perPage).limit(perPage)
+    const parentData=await parentModel.find({})
+    return [response,parentData];
+
+  } catch (error) {
+    throw error;
+  }
+}
+
+
+
+async function categoryPost(category, res) {
+  const catValue = category['category'];
+;
+
+  try {
+    const products = await productModel.find({ category: catValue }).exec();
+   
+    const parentData = await parentModel.find({})
+    return [products,parentData]
+  
+  } catch (err) {
+    console.log(err);
+    
+  }
+}
+
+
+
+async function forproducts(req, res) {
+  let productsData = await productModel
+    .find({})
+    let bannerData=await bannerModel.find({})
+    .catch((error) =>
+      console.log(
+        `Error at finding the Prodcuts list from the DB, refer the error : ${error}`
+      )
+    );
+
+  return[ productsData,bannerData]
+}
+
+async function forOnePro(prodId) {
+  let oneProduct = await productModel
+    .findOne({ id: prodId })
+    .catch((error) =>
+      console.log(
+        `Error at finding the Producct for Editing from the DB,error is : ${error}`
+      )
+    );
+  return oneProduct;
+}
+
+function clearItemData(req, res, next) {
+  console.log("Item Data From the Session");
+  delete req.session.itemData;
+  next();
+}
+
+async function addCart(productToTheCart) {
+  let cart = await cartModel.findOne({ user: productToTheCart.user });
+
+  if (cart) {
+    let product = productToTheCart.cartItems.prod;
+    let productExists = cart.cartItems.find((cart) => cart.prod == product);
+    if (productExists) {
+      let incCartQty = await cartModel.findOneAndUpdate(
+        { id: cart.id, "cartItems.prod": productToTheCart.cartItems.prod },
+        {
+          $inc: { "cartItems.$.quantity": productToTheCart.cartItems.quantity },
+        }
+      );
+    } else {
+      let updateCart = await cartModel.updateOne(
+        { id: cart.id },
+        { $push: { cartItems: productToTheCart.cartItems } }
+      );
+    }
+    notifier.notify({
+      title: "Product added to cart",
+      message: `The product has been added to your cart`,
+      sound: true,
+      wait: false,
+      appName:"Phone Store",
+      icon:"public/images/successicon.jpg",
+      position:"top-left"
+    });
+  } else {
+    cart = await cartModel.create({
+      id: uuidv4(),
+      user: productToTheCart.user,
+      cartItems: productToTheCart.cartItems,
+    });
+  }
+  const userCartupdate = await userModel.updateOne(
+    { id: productToTheCart.user },
+    { $set: { cart: cart.id } }
+  );
+  
+  return cart;
+}
+
+async function viewCart(cartId) {
+  let cart = await cartModel.findOne({ id: cartId }).populate({
+    path: "cartItems.product",
+    select: "id itemName price images IsActive",
+  });
+  let cartItems = [];
+
+  cart.cartItems.forEach((item, index) => {
+    cartItems[index] = {
+      id: item.product.id,
+      itemName: item.product.itemName,
+      price: item.product.price,
+      images: item.product.images,
+      
+      quantity: cart.cartItems[index].quantity,
+      product: item.product._id,
+      subtotal: item.quantity * item.product.price,
+    };
+  });
+
+  let totalPrice = cart.cartItems.reduce(
+    (total, item) => total + item.quantity * item.price,
+    0
+  );
+
+  return [cartItems, totalPrice];
+}
+
+async function clearCart() {
+  let cartClear = await cartModel.updateMany({}, { $set: { cartItems: [] } });
+
+  return cartClear;
+}
+
+async function removeCartItem(itemTodelete) {
+  let removeItem = await cartModel.updateOne(
+    { "cartItems.prod": itemTodelete },
+    { $pull: { cartItems: { prod: itemTodelete } } }
+  );
+
+  return removeItem;
+}
+
+async function addWishlist(prodId,userId){
+
+  console.log("reached Helpers")
+  let proObj={
+    productId:prodId
+  }
+  let wishlistItem = await productModel.findOne({ id: prodId });
+  //  console.log(wishlistItem);
+  // if(wishlistItem)
+let wishlist=await wishModel.findOne({user:userId});
+console.log("wishlist"+wishlist);
+if(wishlist){
+  let productExist =  wishlist.wishitems.findIndex((item) => item.productId === prodId);
+
+  if(productExist==-1){
+  let update=  await wishModel.updateOne({ user: userId },
+      {
+          $addToSet: {
+            wishitems: proObj
+          },
+      }
+  )
+ 
+
+  }
+}else{
+    const newWishlist = new wishModel({
+      user: userId,
+      wishitems: proObj
+  });
+  
+  await newWishlist.save()
+
+  }
+  let updatedWishlist = await wishModel.findOne({ user: userId }).populate("wishitems.productId");
+  
+  notifier.notify({
+    title: "Product added to wishlist",
+    message: `The product has been added to your wishlist`,
+    sound: true,
+    wait: false,
+    appName:"Phone Store",
+    icon:"public/images/successicon.jpg",
+    position:"top-left"
+  });
+   return ;
+  
+  
+    
+   
+}
+async function listWish(userId,res){
+return wishModel.aggregate([
+
+
+    {
+      $match: {
+          user:userId
+      }
+  },
+
+  {
+    $unwind: '$wishitems'
+},
+{
+ 
+    $project: {
+      item: '$wishitems.productId',
+        }
+  
+},
+{
+  $lookup: {
+      from: 'products',
+      localField: "item",
+      foreignField: "id",
+      as: 'wishlist'
+  }
+},
+{
+  $project: {
+      item: 1, wishlist: { $arrayElemAt: ['$wishlist', 0] }
+  }
+},
+
+  ]).then((wishlistItems)=>{
+    
+   
+    
+    return  wishlistItems
+  })
+
+
+
+}
+
+ function removeWishItem(itemTodelete){
+  
+  
+   
+  let removeItem =  wishModel.updateOne(
+    { "wishitems.productId": itemTodelete },
+    { $pull: { wishitems: { productId: itemTodelete } } }
+  )
+
+  return removeItem;
+   
+
+
+
+}
+
+
+
+async function address(newAddress) {
+  let address = await addressModel.findOne({ user: newAddress.user });
+
+  if (address) {
+    let updateAddress = await addressModel.findOneAndUpdate(
+      { id: address.id },
+      { $push: { addresses: newAddress.address } }
+    );
+
+    // console.log(updateAddress);
+
+    return newAddress.address;
+  } else {
+    let toAddAddress = await addressModel.create({
+      id: uuidv4(),
+      user: newAddress.user,
+      addresses: newAddress.address,
+    });
+
+    const userAddressupdate = await userModel.updateOne(
+      { id: newAddress.user },
+      { $set: { address: toAddAddress.id } }
+    );
+
+    return newAddress.address;
+  }
+}
+
+async function forProfilePage(user) {
+  
+
+  let userData = await userModel.findOne({ id: user.id });
+
+  let orderId = userData.order;
+
+  let addressId = userData.address;
+
+  
+  let orders = await orderModel.findOne({ id: orderId });
+
+  let addresses = await addressModel.findOne({ id: addressId });
+  
+let addressData=addresses.addresses[0]
+
+  const orderData = [];
+  const itemData = [];
+  if (orders && orders.ordersList) {
+  for ( var orderList of orders.ordersList) {
+    let idAddress = orderList.address;
+
+
+    const address = await addressModel.findOne({ "addresses.id": idAddress });
+
+
+    const orderInfo = {
+      id: orderList.id,
+      user: user.name,
+      items: orderList.items,
+      totalPrice: orderList.totalPrice,
+      orderStatus: orderList.orderStatus,
+      address: address,
+      createdAt: orderList.createdAt,
+      modifiedAt: orderList.modifiedAt,
+       cancellationrequest: orderList.cancellationrequest,
+      // returnRequest: orderList.returnRequest,
+    };
+
+    orderData.push(orderInfo);
+
+    for ( orderItem of orderList.orderItems) {
+      const eachItem = await productModel.findOne({ price: orderItem.price });
+      
+    
+      
+      if (eachItem) {
+        const itemInfo = {
+          itemName: eachItem.itemName,
+          quantity: orderItem.quantity,
+          price: orderItem.price,
+          images: eachItem.images,
+          description: eachItem.description,
+        };
+
+       
+        itemData.push(itemInfo);
+      } else {
+        console.log(`Could not find product with id ${orderItem.id}`);
+      }
+    }
+  }
+}
+
+  return { orderData,itemData,userData,addressData };
+}
+
+async function updateUser(userId, name, email,contactNumber) {
+  let updatedUser = await userModel.findOneAndUpdate(
+    { _id: userId },
+    { email: email, name: name ,contactNumber:contactNumber},
+    { new: true }
+  );
+
+ 
+}
+
+
+
+
+async function changePassword(
+  userId,
+  currentPassword,
+  newPassword,
+  confirmPassword
+) {
+  
+  
+    let currentUser = await userModel.findOne({ _id: userId });
+    if (!currentUser) {
+     
+  
+      return currentPassword;
+    }
+
+    
+
+    if (newPassword !== confirmPassword) {
+      
+      notifier.notify({
+        title: "Failed",
+        message: `Error Occured while changing Password. Pls try Again!`,
+        sound: true,
+        wait: false,
+        appName:"Phone Store",
+        icon:"public/images/fail.png"
+      });
+      return currentPassword;
+    }
+
+    if (newPassword === currentPassword) {
+      console.log("New password cannot be the same as the current password");
+      notifier.notify({
+        title: "Failed",
+        message: `Error Occured while changing Password. Pls try Again!`,
+        sound: true,
+        wait: false,
+        appName:"Phone Store",
+        icon:"public/images/fail.png"
+
+      });
+      return currentPassword;
+    }
+
+    
+
+    try {
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      
+
+      let updatedUser=await userModel.updateOne({_id:userId},{$set:{hashedPassword:hashedPassword}})
+      if(updatedUser){
+        notifier.notify({
+          title: "Password Reset",
+          message: `Your Password is successfully reset! `,
+          sound: true,
+          wait: false,
+          appName:"Phone Store",
+          icon:"public/images/successicon.jpg"
+
+        });
+        return currentPassword
+        
+      }
+
+
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: 'An error occurred while changing the password' });
+    }
+    
+ 
+}
+
+async function addressAdd(addressData,userId){
+
+let updateAddress= await addressModel.findOne({user:userId})
+console.log("update Address  255555 ");
+console.log(updateAddress);
+updateAddress.addresses[0].name=addressData.name
+updateAddress.addresses[0].contactNumber=addressData.contactNumber
+updateAddress.addresses[0].firstLine=addressData.firstLine
+updateAddress.addresses[0].secondLine=addressData.secondLine
+updateAddress.addresses[0].city=addressData.city
+updateAddress.addresses[0].pincode=addressData.pincode
+updateAddress.addresses[0].state=addressData.state
+
+
+
+return await updateAddress.save();
+}
+   
+
+async function orderCreate(order, req, res) {
+  let orderId;
+  let totalPrice;
+  let user = await userModel.findOne({ id: order.customerId });
+
+  if (user.order) {
+    let updateOrder = await orderModel.findOneAndUpdate(
+      { id: user.order },
+      { $push: { ordersList: order.ordersList } }
+    );
+
+    orderId = updateOrder.ordersList[updateOrder.ordersList.length - 1].id;
+    totalPrice = updateOrder.ordersList[updateOrder.ordersList.length - 1].totalPrice;
+  } else {
+    const newOrder = await orderModel.create({
+      id: order.id,
+      customerId: order.customerId,
+      ordersList: order.ordersList,
+    });
+
+    orderId = newOrder.ordersList[0].id;
+    totalPrice = newOrder.ordersList[0].totalPrice;
+
+    const userOrderupdate = await userModel.updateOne(
+      { id: order.customerId },
+      { $set: { order: newOrder.id } }
+    );
+  }
+
+  const clearCartafterOrder = clearCart();
+
+
+  return { orderId, totalPrice };
+}
+
+
+async function cancelOrder(idCancel) {
+  let cancelorder = await orderModel.findOneAndUpdate(
+    { "ordersList.id": idCancel },
+    { $set: { "ordersList.$.cancellationrequest": true } }
+  );
+
+  console.log(cancelOrder);
+  return cancelOrder;
+}
+
+
+
+async function returnOrder(idReturn) {
+  let retunrOrder = await orderModel.findOneAndUpdate(
+    { "ordersList.id": idReturn },
+    { $set: { "ordersList.$.returnRequest": true } }
+  );
+
+  return true;
+}
+
+
+async function searchPost(searchData) {
+  try {
+    const searchTerm = searchData['search'];
+    console.log("search term: " + searchTerm);
+
+    const product = await productModel.findOne({ itemName: { $regex: new RegExp(searchTerm, 'i') } });
+  
+
+    if (!product) {
+      return
+    }
+    else{
+      const parentData=await parentModel.find({})
+      // console.log(parentData)
+      return [product,parentData]
+    }
+
+    // Do something with the product if found
+  } catch (error) {
+    console.error(error);
+    // Handle the error
+  }
+}
+
+async function sortPost(start, end){
+const products=  await productModel.find({ price: { $gte: start, $lte: end } })
+
+const parentData=await parentModel.find({})
+return [products,parentData]
+
+}
+
+
+async function categoryShop(category){
+  const Category=await categoryModel.find({category:category})
+  
+  const selectedCategory = Category[0]
+  const parentCategory=selectedCategory .parent
+  
+  const regex = new RegExp(selectedCategory.category, 'i'); // Create regex with category value
+  
+  const products = await productModel.find({ itemName: regex });
+  const parentData=await parentModel.find({})
+  
+  return [products,parentData]
+ 
+    
+  
+}
+async function statusUpdate(orderData){
+
+ 
+  const ordersToUpdate=  orderData.filter((order) => order.cancellationrequest == true)
+  if(ordersToUpdate){
+    if (ordersToUpdate.length > 0) {
+      ordersToUpdate.forEach(async(order) => {
+        order.orderStatus = "cancelled";
+        // await order.save()
+      });
+    }
+  }
+  
+return 
+ 
+
+}
+
+async function docCount(){
+  const count=await productModel.countDocuments()
+  return count
+
+}
+
+
+
+module.exports = {
+  signup,
+  signin,
+  
+  shopListProduct,
+  forOnePro,
+  addCart,
+  viewCart,
+  sendOTP,
+  clearCart,
+  removeCartItem,
+  address,
+  forproducts,
+  forProfilePage,
+  addressAdd,
+  cancelOrder,
+  returnOrder,
+  statusUpdate,
+  orderCreate,
+  loginOtp,
+  updateUser,
+  changePassword,
+  clearItemData,
+  addWishlist,
+  listWish,
+  removeWishItem,
+  searchPost,
+  categoryPost,
+  sortPost,
+  categoryShop,
+  docCount
+  
+};

@@ -1,0 +1,31 @@
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Categories </h2>
+            <p>Add, edit or delete a  Parent category</p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <form action="/admin/editcat/<%= forEditCategory.id%>" method="post">
+                        <div class="mb-4">
+                            <label for="name" class="form-label">Category Name</label>
+                            <input type="text" placeholder="Type here" class="form-control" name="category" value="<%= forEditCategory.category%>" />
+                        </div>
+                       
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Edit category</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-9">
+                       
+                </div>
+                </div>
+             <!-- .row // -->
+        </div> <!-- card body .// -->
+    </div> <!-- card .// -->
+</section> <!-- content-main end// -->
+

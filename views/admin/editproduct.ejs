@@ -1,0 +1,147 @@
+<section class="content-main">
+    <div class="row">
+        <div class="col-6">
+            <div class="content-header">
+                <h2 class="content-title">Edit Product</h2>
+                 <div>
+                    <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button>
+                    <button class="btn btn-md rounded font-sm hover-up">Public</button>
+                </div> 
+            </div>
+        </div>
+    </div>
+    <form action="/admin/products/edit/<%=forEditProduct.id%>" method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6>General info</h6>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="mb-4">
+                                <label class="form-label" value="<%=forEditProduct.itemName%>">Product title</label>
+                                <input type="text" placeholder="Type here" class="form-control" name="itemName" value="<%=forEditProduct.itemName%>" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Description</label>
+                                <textarea placeholder="Type here" class="form-control" rows="4" name="description" value="<%=forEditProduct.description%>" required></textarea>
+                            </div>
+        
+                        </div>  <!--col.// -->
+                    </div> <!-- row.// -->
+                    
+                    <hr class="mb-4 mt-0">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6>Category</h6>
+                        </div>
+                        <div class="col-md-9">
+                            <label class="form-label">Mention the Category</label>
+                            <input type="text" placeholder="Enter the Category" class="form-control" name="category" value="<%=forEditProduct.category%>" required>
+                        </div>
+                        <div class="col-md-9">
+                           
+                        </div>  <!--col.// -->
+                    </div> <!-- row.// -->
+                    <hr class="mb-4 mt-0">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6>Pricing</h6>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="mb-4">
+                                <label class="form-label">Cost in Rupees</label>
+                                <input type="text" placeholder="Rs.0.0" class="form-control" name="price" value="<%=forEditProduct.price%>" required>
+                            </div>
+                        </div> <!-- col.// -->
+                    </div> <!-- row.// -->
+                    <hr class="mb-4 mt-0">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6>Quantity</h6>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="mb-4">
+                                <label class="form-label">Number of Units</label>
+                                <input type="text" placeholder="...." class="form-control" name="quantity",value="<%=forEditProduct.quantity%>" required>
+                            </div>
+                        </div> <!-- col.// -->
+                    </div> <!-- row.// -->
+                    <hr class="mb-4 mt-0">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6>Media</h6>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="mb-4">
+                                <label class="form-label">Images</label>
+                                <img src="/<%= forEditProduct.images[0].path%>" alt="" srcset="" class="img-sm img-thumbnail" accept="image/*" multiple>
+                                    
+                                <input class="form-control" type="file" name="images" required >
+                            </div>
+                        </div> <!-- col.// -->
+                    </div> 
+                    <div class="row">
+                        <div class="col-md-3">
+                            
+                        </div>
+                        <div class="col-md-9">
+                            <div class="mb-4">
+                                <button type="submit" class="btn btn-primary btn-sm rounded">Submit</button>
+                            </div>
+                        </div> <!-- col.//-->
+                    </div> <!--.row end// -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+    </div>
+</section> <!-- content-main end// -->
+
+<!--<section>
+    <div class="container mt-4">
+      <div class="row">
+        <div class="col-md-6">
+          <h2 class="text-center">Add Product</h2>
+      
+  <form action="/admin/add-product" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="">Name</label>
+      <input type="text" name="Name" class="form-control" >
+      
+    </div>
+    <div class="form-group">
+      <label for="">Category</label>
+      <input type="text" name="Category" class="form-control" >
+      
+    </div>
+    <div class="form-group">
+      <label for="">Price</label>
+      <input type="text"name="Price" class="form-control" >
+      
+    </div>
+    <div class="form-group">
+      <label for="">Description</label>
+      <input type="text" name="Description" class="form-control" >
+      
+    </div>
+  <div class="form-group">
+      <label for="">Image</label>
+      
+       <input type="file" class="form-control-file" name="Image">
+      
+    </div>
+    
+  
+   
+   
+    <button type="submit" class="btn btn-success mt-4">Submit</button>
+  </form>
+        </div>
+      </div>
+    </div>
+  </section>-->

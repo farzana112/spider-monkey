@@ -1,0 +1,338 @@
+<main class="main-wrap">
+  <section class="content-main">
+    <div class="row">
+      <div class="col-9">
+        <div class="content-header">
+          <h2 class="content-title">Add New Product</h2>
+          
+        </div>
+      </div>
+      <form id="add-banner"  method="post" enctype="multipart/form-data">
+      <div class="row">
+         <div class="col-lg-6">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h4>Basic</h4>
+            </div>
+            <div class="card-body">
+              <div class="mb-4">
+                <label for="product_name" class="form-label">Banner Title1</label>
+                <input type="text" name="title1" placeholder="Type here" class="form-control" id="product_name">
+              </div>
+               <div class="mb-4">
+                <label for="product_name" class="form-label">Banner Title2</label>
+                <input type="text" name="title2" placeholder="Type here" class="form-control" id="product_name">
+              </div>
+               <div class="mb-4">
+                <label for="product_name" class="form-label">Banner Title3</label>
+                <input type="text" name="title3" placeholder="Type here" class="form-control" id="product_name">
+              </div>
+                <div class="row">
+                <div class="col-lg-4">
+                  <div class="mb-4">
+                    <label class="form-label">Offer percentage</label>
+                    <div class="row gx-2">
+                      <input placeholder="%" name="discount" type="text" class="form-control">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="mb-4">
+                    <label class="form-label">Tag name</label>
+                    <input placeholder="" name="tag" type="text" class="form-control">
+                  </div>
+                </div>
+              </div>
+              <div class="mb-4">
+                <label class="form-label">Banner description</label>
+                <textarea name="description" placeholder="Type here" class="form-control" rows="4"></textarea>
+              </div>
+            </div>
+          </div> <!-- card end// -->
+        </div>
+        <div class="col-lg-4">
+          <div class="card mb-5">
+            <div class="card-header">
+              <h4>Media</h4>
+            </div>
+            <div class="card-body">
+              <div class="input-upload">
+                <img src="/assets/imgs/theme/upload.svg" id="imgView" alt="">
+                <input class="form-control" name="image" onchange="viewImage(event)" value="upload" type="file" multiple>
+              </div>
+            </div>
+          </div> <!-- card end// -->
+        </div>
+        <div>
+            <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button>
+            <button type="submit" class="btn btn-md rounded font-sm hover-up">Publich</button>
+          </div>
+      </div>
+       
+      </form>
+    </div>
+    <script>
+      function viewImage(event) {
+        document.getElementById('imgView').src = URL.createObjectURL(event.target.files[0])
+      }
+    </script>
+  </section> <!-- content-main end// -->
+</main>
+<script>
+  $("#add-banner").submit((e) => {
+    e.preventDefault();
+    const formData = new FormData(document.getElementById("add-banner"));
+    for (var pair of formData.entries()) {
+      console.log(pair[0] + ", " + pair[1]);
+    }
+    console.log(formData);
+
+    $.ajax({
+      url: "/admin/posting-banner",
+      type: "post",
+      data: formData,
+      processData: false,
+      contentType: false,
+      cache: false,
+    })
+      .done((res) => {})
+      .fail((err) => {});
+  });
+  // function postBanner() {
+  //   console.log("hjgjhghjghjghgj");
+  //   const bannerFormData = new FormData($('#form'));
+
+  // }
+
+  function validateTitle() {
+    const titleField = document.getElementById("title");
+    const titleValue = titleField.value.trim();
+    const errorDiv = document.getElementById("title-error");
+    const form = document.getElementById("form");
+
+    if (titleValue.length === 0) {
+      errorDiv.textContent = "(Title cannot be empty!)";
+      errorDiv.style.color = "red";
+      errorDiv.style.fontWeight = "bold";
+
+      titleField.setCustomValidity("(Title cannot be empty!)");
+    } else {
+      errorDiv.textContent = "";
+      titleField.setCustomValidity("");
+    }
+  }
+  function validateDescription() {
+    const descriptionField = document.getElementById("description");
+    const descriptionValue = descriptionField.value.trim();
+    const errorDiv = document.getElementById("description-error");
+    errorDiv.style.color = "red";
+    errorDiv.style.fontWeight = "bold";
+
+    if (descriptionValue.length === 0) {
+      errorDiv.textContent = "(Description cannot be empty...)";
+      descriptionField.setCustomValidity("Description cannot be empty");
+    } else {
+      errorDiv.textContent = "";
+      descriptionField.setCustomValidity("");
+    }
+  }
+
+  function validateLink() {
+    const linkField = document.getElementById("link");
+    const linkValue = linkField.value.trim();
+    const errorDiv = document.getElementById("link-error");
+    errorDiv.style.color = "red";
+    errorDiv.style.fontWeight = "bold";
+
+    if (linkValue.length === 0) {
+      errorDiv.textContent = "Link cannot be empty";
+      linkField.setCustomValidity("Link cannot be empty");
+    } else {
+      errorDiv.textContent = "";
+      linkField.setCustomValidity("");
+    }
+  }
+  function validateImage() {
+    const imageField = document.getElementById("image");
+    const imageFile = imageField.files[0];
+    const errorDiv = document.getElementById("image-error");
+    errorDiv.style.color = "red";
+    errorDiv.style.fontWeight = "bold";
+    if (!imageFile) {
+      errorDiv.textContent = "Image is required";
+      imageField.setCustomValidity("Image is required");
+    } else if (!/\.(jpe?g|png|gif)$/i.test(imageFile.name)) {
+      errorDiv.textContent =
+        "Invalid file type. Please select a JPEG, PNG, or GIF image";
+      imageField.setCustomValidity(
+        "Invalid file type. Please select a JPEG, PNG, or GIF image"
+      );
+    } else {
+      errorDiv.textContent = "";
+      imageField.setCustomValidity("");
+    }
+  }
+</script>
+
+<!-- <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+<script src="https://unpkg.com/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+<section class="">
+  <div class="container d-flex justify-content-center">
+    <div class="row w-75 mt-5">
+      <div class="col-md-12">
+        <h2 class="text-center">Add Banner</h2>
+        <form
+          name="myform"
+          action="/admin/add-banner"
+          method="POST"
+          enctype="multipart/form-data"
+          id="form"
+        >
+          <label for="">Title</label>
+
+          <input
+            type="text"
+            name="title"
+            class="form-control"
+            id="title"
+            required
+            onkeyup="validateTitle()"
+          />
+          <span id="title-error" class="validation-label"></span>
+          <div></div>
+
+          <label for="">Description</label>
+          <input
+            type="text"
+            name="description"
+            class="form-control"
+            id="description"
+            required
+            onkeyup="validateDescription()"
+          />
+          <span id="description-error" class="validation-label"></span>
+          <div></div>
+
+          <label for="">Link</label>
+          <input
+            type="text"
+            name="link"
+            class="form-control"
+            id="link"
+            required
+            onkeyup="validateLink()"
+          />
+          <span id="link-error" class="validation-label"></span>
+          <div></div>
+          <label for="">Image</label>
+          <input
+            type="file"
+            name="image"
+            class="form-control"
+            id="image"
+            required
+            onkeyup="validateImage()"
+          />
+          <span id="image-error" class="validation-label"></span>
+
+          <button
+            type="submit"
+            class="btn btn-success mt-4"
+          
+          >
+            Submit
+          </button>
+          <br/>
+          <h1 style="visibility: hidden;">.</h1>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function validateTitle() {
+    const titleField = document.getElementById("title");
+    const titleValue = titleField.value.trim();
+    const errorDiv = document.getElementById("title-error");
+  const form = document.getElementById('form');
+
+
+    if (titleValue.length === 0) {
+      errorDiv.textContent = "(Title cannot be empty!)";
+      errorDiv.style.color = "red";
+      errorDiv.style.fontWeight = "bold";
+
+      titleField.setCustomValidity("(Title cannot be empty!)");
+    } else {
+      errorDiv.textContent = "";
+      titleField.setCustomValidity("");
+    }
+  }
+
+  function validateDescription() {
+    const descriptionField = document.getElementById("description");
+    const descriptionValue = descriptionField.value.trim();
+    const errorDiv = document.getElementById("description-error");
+    errorDiv.style.color = "red";
+    errorDiv.style.fontWeight = "bold";
+
+    if (descriptionValue.length === 0) {
+      errorDiv.textContent = "(Description cannot be empty...)";
+      descriptionField.setCustomValidity("Description cannot be empty");
+    } else {
+      errorDiv.textContent = "";
+      descriptionField.setCustomValidity("");
+    }
+  }
+
+  function validateLink() {
+    const linkField = document.getElementById("link");
+    const linkValue = linkField.value.trim();
+    const errorDiv = document.getElementById("link-error");
+    errorDiv.style.color = "red";
+    errorDiv.style.fontWeight = "bold";
+
+    if (linkValue.length === 0) {
+      errorDiv.textContent = "Link cannot be empty";
+      linkField.setCustomValidity("Link cannot be empty");
+    } else {
+      errorDiv.textContent = "";
+      linkField.setCustomValidity("");
+    }
+  }
+  function validateImage() {
+    const imageField = document.getElementById("image");
+    const imageFile = imageField.files[0];
+    const errorDiv = document.getElementById("image-error");
+    errorDiv.style.color = "red";
+    errorDiv.style.fontWeight = "bold";
+    if (!imageFile) {
+      errorDiv.textContent = "Image is required";
+      imageField.setCustomValidity("Image is required");
+    } else if (!/\.(jpe?g|png|gif)$/i.test(imageFile.name)) {
+      errorDiv.textContent =
+        "Invalid file type. Please select a JPEG, PNG, or GIF image";
+      imageField.setCustomValidity(
+        "Invalid file type. Please select a JPEG, PNG, or GIF image"
+      );
+    } else {
+      errorDiv.textContent = "";
+      imageField.setCustomValidity("");
+    }
+  }
+
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!validateTitle() ||!validateDescription ||!validateImage||!validateLink) {
+    
+      return false;
+    } else {
+      form.submit();
+    }
+  });
+</script> -->

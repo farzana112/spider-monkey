@@ -1,0 +1,492 @@
+<head>
+  <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+  <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+  <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+  <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+ 
+  <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+</head>
+<style>
+  #chartdiv {
+    width: 100%;
+    height: 500px;
+  }
+  
+#chartdiv2 {
+  width: 50%;
+  height: 400px;
+}
+</style>
+
+
+
+
+<!-- <section class="content-main mt-80 mb-80">
+    <div>
+        <a href="/admin/sales-report" class="btn btn-primary"
+          ><i class="text-muted material-icons md-post_add"></i>Create report</a
+        >
+      </div>
+    <div class="card mx-auto card-login">
+       
+        <div class="card-body">
+
+            
+            
+
+            
+            
+        </div>
+    </div>
+</section> -->
+
+<section class="content-main">
+  <div class="content-header">
+    <div>
+      <h2 class="content-title card-title" style="color: teal">Dashboard</h2>
+      <p>Whole data about your business here</p>
+    </div>
+    <div>
+      <a href="/admin/sales-report" class="btn btn-primary"
+        ><i class="text-muted material-icons md-post_add"></i>Create report</a
+      >
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-3">
+      <div class="card card-body mb-4">
+        <article class="icontext">
+          <span class="icon icon-sm rounded-circle bg-primary-light"
+            ><i class="text-primary material-icons md-monetization_on"></i
+          ></span>
+          <div class="text">
+            <h6 class="mb-1 card-title">Revenue</h6>
+            <span>₹<%=locals.total.toLocaleString('en-IN')%></span>
+            <span class="text-sm"> Shipping fees are not included </span>
+          </div>
+        </article>
+      </div>
+    </div>
+    <div class="col-lg-3">
+      <div class="card card-body mb-4">
+        <article class="icontext">
+          <span class="icon icon-sm rounded-circle bg-success-light"
+            ><i class="text-success material-icons md-local_shipping"></i
+          ></span>
+          <div class="text">
+            <h6 class="mb-1 card-title">Delivered Orders</h6>
+            <span><%=locals.deliveredOrderCount%></span>
+            <span class="text-sm"> Excluding orders in transit </span>
+          </div>
+        </article>
+      </div>
+    </div>
+    <div class="col-lg-3">
+      <div class="card card-body mb-4">
+        <article class="icontext">
+          <span class="icon icon-sm rounded-circle bg-warning-light"
+            ><i class="text-warning material-icons md-qr_code"></i
+          ></span>
+          <div class="text">
+            <h6 class="mb-1 card-title">Total Products</h6>
+            <span><%=locals.productsCount%></span>
+          </div>
+        </article>
+      </div>
+    </div>
+    <div class="col-lg-3">
+      <div class="card card-body mb-4">
+        <article class="icontext">
+          <span class="icon icon-sm rounded-circle bg-warning-light"
+            ><i class="text-warning material-icons md-qr_code"></i
+          ></span>
+          <div class="text">
+            <h6 class="mb-1 card-title">Total Users</h6>
+            <span><%=locals.usersCount%></span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+ 
+
+ 
+  
+
+    
+    
+
+  
+
+
+<div class="col-xl-6 col-lg-12">
+  <div class="card mb-4">
+    <article class="card-body">
+      <h5 class="card-title">Current Order Status</h5>
+      <div id="chartdiv">
+
+      </div>    
+</article>
+</div>
+
+
+
+</div>
+<div class="col-xl-12 col-lg-12">
+  <div class="card mb-4">
+    <article class="card-body">
+      <h5 class="card-title">Types of Order </h5>
+      <div id="chartdiv2">
+
+      </div>
+</article>
+</div>
+</div>
+
+<div>
+
+  
+  <p style="visibility: hidden" id="rp">
+    <%=JSON.stringify(locals.rpCount) %>
+  </p>
+  <p style="visibility: hidden" id="cod">
+    <%=JSON.stringify(locals.codCount) %>
+  </p>
+
+  <p style="visibility: hidden" id="cancel">
+    <%=JSON.stringify(locals.cancelOrders) %>
+  </p>
+  <p style="visibility:hidden" id="ship">
+    <%=JSON.stringify(locals.shippedOrders)%>
+  </p>
+  <p style="visibility:hidden" id="process">
+    <%=JSON.stringify(locals.proOrders)%>
+  </p>
+  <p style="visibility:hidden" id="deliver">
+    <%=JSON.stringify(locals.deliverOrders)%>
+  </p>
+</div>
+
+
+<script>
+  am5.ready(function() {
+  
+  // Create root element
+  // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+  var root = am5.Root.new("chartdiv2");
+
+  // Set themes
+  // https://www.amcharts.com/docs/v5/concepts/themes/
+  root.setThemes([
+    am5themes_Animated.new(root)
+  ]);
+  let rpCount=JSON.parse(document.getElementById('rp').innerHTML);
+  let codCount=JSON.parse(document.getElementById('cod').innerHTML);
+  var data = [{
+    name: "RazorPay",
+    steps:rpCount,
+    pictureSettings: {
+      src: "https://www.amcharts.com/wp-content/uploads/2019/04/monica.jpg"
+    }
+  }, {
+    name: "Cash On Delivery",
+    steps: codCount,
+    pictureSettings: {
+      src: "https://www.amcharts.com/wp-content/uploads/2019/04/joey.jpg"
+    }
+  }  ];
+  
+  // Create chart
+  // https://www.amcharts.com/docs/v5/charts/xy-chart/
+  var chart = root.container.children.push(
+    am5xy.XYChart.new(root, {
+      panX: false,
+      panY: false,
+      wheelX: "none",
+      wheelY: "none",
+      paddingBottom: 50,
+      paddingTop: 40
+    })
+  );
+  
+  // Create axes
+  // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
+  
+  var xRenderer = am5xy.AxisRendererX.new(root, {});
+  xRenderer.grid.template.set("visible", false);
+  
+  var xAxis = chart.xAxes.push(
+    am5xy.CategoryAxis.new(root, {
+      paddingTop:40,
+      categoryField: "name",
+      renderer: xRenderer
+    })
+  );
+  
+  
+  var yRenderer = am5xy.AxisRendererY.new(root, {});
+  yRenderer.grid.template.set("strokeDasharray", [3]);
+  
+  var yAxis = chart.yAxes.push(
+    am5xy.ValueAxis.new(root, {
+      min: 0,
+      max:40,
+      renderer: yRenderer
+    })
+  );
+  
+  // Add series
+  // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
+  var series = chart.series.push(
+    am5xy.ColumnSeries.new(root, {
+      name: "Income",
+      xAxis: xAxis,
+      yAxis: yAxis,
+      valueYField: "steps",
+      categoryXField: "name",
+      sequencedInterpolation: true,
+      calculateAggregates: true,
+      maskBullets: false,
+      tooltip: am5.Tooltip.new(root, {
+        dy: -30,
+        pointerOrientation: "vertical",
+        labelText: "{valueY}"
+      })
+    })
+  );
+  
+  series.columns.template.setAll({
+    strokeOpacity: 0,
+    cornerRadiusBR: 10,
+    cornerRadiusTR: 10,
+    cornerRadiusBL: 10,
+    cornerRadiusTL: 10,
+    maxWidth: 50,
+    fillOpacity: 0.8
+  });
+  
+  var currentlyHovered;
+  
+  series.columns.template.events.on("pointerover", function (e) {
+    handleHover(e.target.dataItem);
+  });
+  
+  series.columns.template.events.on("pointerout", function (e) {
+    handleOut();
+  });
+  
+  function handleHover(dataItem) {
+    if (dataItem && currentlyHovered != dataItem) {
+      handleOut();
+      currentlyHovered = dataItem;
+      var bullet = dataItem.bullets[0];
+      bullet.animate({
+        key: "locationY",
+        to: 1,
+        duration: 600,
+        easing: am5.ease.out(am5.ease.cubic)
+      });
+    }
+  }
+  
+  function handleOut() {
+    if (currentlyHovered) {
+      var bullet = currentlyHovered.bullets[0];
+      bullet.animate({
+        key: "locationY",
+        to: 0,
+        duration: 600,
+        easing: am5.ease.out(am5.ease.cubic)
+      });
+    }
+  }
+  
+  var circleTemplate = am5.Template.new({});
+  
+  series.bullets.push(function (root, series, dataItem) {
+    var bulletContainer = am5.Container.new(root, {});
+    var circle = bulletContainer.children.push(
+      am5.Circle.new(
+        root,
+        {
+          radius: 34
+        },
+        circleTemplate
+      )
+    );
+  
+    var maskCircle = bulletContainer.children.push(
+      am5.Circle.new(root, { radius: 27 })
+    );
+  
+    // only containers can be masked, so we add image to another container
+    var imageContainer = bulletContainer.children.push(
+      am5.Container.new(root, {
+        mask: maskCircle
+      })
+    );
+  
+    var image = imageContainer.children.push(
+      am5.Picture.new(root, {
+        templateField: "pictureSettings",
+        centerX: am5.p50,
+        centerY: am5.p50,
+        width: 60,
+        height: 60
+      })
+    );
+  
+    return am5.Bullet.new(root, {
+      locationY: 0,
+      sprite: bulletContainer
+    });
+  });
+  
+  // heatrule
+  series.set("heatRules", [
+    {
+      dataField: "valueY",
+      min: am5.color(0xe5dc36),
+      max: am5.color(0x5faa46),
+      target: series.columns.template,
+      key: "fill"
+    },
+    {
+      dataField: "valueY",
+      min: am5.color(0xe5dc36),
+      max: am5.color(0x5faa46),
+      target: circleTemplate,
+      key: "fill"
+    }
+  ]);
+  
+  series.data.setAll(data);
+  xAxis.data.setAll(data);
+  
+  var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
+  cursor.lineX.set("visible", false);
+  cursor.lineY.set("visible", false);
+  
+  cursor.events.on("cursormoved", function () {
+    var dataItem = series.get("tooltip").dataItem;
+    if (dataItem) {
+      handleHover(dataItem);
+    } else {
+      handleOut();
+    }
+  });
+  
+  // Make stuff animate on load
+  // https://www.amcharts.com/docs/v5/concepts/animations/
+  series.appear();
+  chart.appear(1000, 100);
+  
+  }); // end am5.ready()
+  </script>
+
+
+<script>
+ 
+    am5.ready(function() {
+
+// Create root element
+// https://www.amcharts.com/docs/v5/getting-started/#Root_element
+var root = am5.Root.new("chartdiv");
+
+// Set themes
+// https://www.amcharts.com/docs/v5/concepts/themes/
+root.setThemes([
+  am5themes_Animated.new(root)
+]);
+
+// Create chart
+// https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
+var chart = root.container.children.push(am5percent.PieChart.new(root, {
+  radius: am5.percent(100),
+  innerRadius: am5.percent(30),
+  layout: root.horizontalLayout
+}));
+
+// Create series
+// https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
+var series = chart.series.push(am5percent.PieSeries.new(root, {
+  name: "Series",
+  valueField: "sales",
+  categoryField: "orderStatus"
+}));
+
+// Set data
+// https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
+
+let cancelData = JSON.parse(document.getElementById('cancel').innerHTML);
+let shipData = JSON.parse(document.getElementById('ship').innerHTML);
+let processData= JSON.parse(document.getElementById('process').innerHTML);
+let deliverData=JSON.parse(document.getElementById('deliver').innerHTML);
+
+series.data.setAll([{
+  orderStatus: "shipped",
+  sales: shipData
+}, {
+  orderStatus: "Cancelled",
+  sales: cancelData
+}, {
+  orderStatus: "Processing",
+  sales: processData
+}, {
+  orderStatus: "Delivered",
+  sales: deliverData
+}
+]);
+
+// Disabling labels and ticks
+series.labels.template.set("visible", false);
+series.ticks.template.set("visible", false);
+
+// Adding gradients
+series.slices.template.set("strokeOpacity", 0);
+series.slices.template.set("fillGradient", am5.RadialGradient.new(root, {
+  stops: [{
+    brighten: -0.8
+  }, {
+    brighten: -0.8
+  }, {
+    brighten: -0.5
+  }, {
+    brighten: 0
+  }, {
+    brighten: -0.5
+  }]
+}));
+
+// Create legend
+// https://www.amcharts.com/docs/v5/charts/percent-charts/legend-percent-series/
+var legend = chart.children.push(am5.Legend.new(root, {
+  centerY: am5.percent(50),
+  y: am5.percent(50),
+  layout: root.verticalLayout
+}));
+// set value labels align to right
+legend.valueLabels.template.setAll({ textAlign: "right" })
+// set width and max width of labels
+legend.labels.template.setAll({ 
+  maxWidth: 140,
+  width: 140,
+  oversizedBehavior: "wrap"
+});
+
+legend.data.setAll(series.dataItems);
+
+
+// Play initial series animation
+// https://www.amcharts.com/docs/v5/concepts/animations/#Animation_of_series
+series.appear(1000, 100);
+
+}); // end am5.ready()
+
+
+
+
+</script>
+

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Razorpay Checkout</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  </head>
+  <body>
+    <h3>Razorpay Checkout</h3>
+    <p>Please wait while we redirect you to the payment page...</p>
+    <script>
+      var orderId = '<%= order.id %>';
+      var options = {
+        "key": "rzp_test_M0KcTcmQL92pf4",
+        "amount": '<%= order.amount%> ',
+        "currency": "<%= order.currency %>",
+        "name": "Phone Store",
+        "description": "Your product or service description",
+        "order_id": orderId,
+        "handler": function(response) {
+          // Handle successful payment response
+          console.log(response);
+          verifyPayment(response,order)
+        },
+        "prefill": {
+          "name": "Farzana Naushad",
+          "email": "john@example.com",
+          "contact": "+919999999999"
+        },
+        "notes": {
+          "address": "Address"
+        },
+        "theme": {
+          "color": "#F37259"
+        }
+      };
+      var rzp1 = new Razorpay(options);
+      rzp1.on('payment.failed', function (response){
+        // Handle failed payment response
+        console.log(response);
+      });
+      rzp1.open();
+
+
+     function  verifyPayment(){
+
+      }
+    </script>
+  </body>
+</html>

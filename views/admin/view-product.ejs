@@ -1,0 +1,144 @@
+<!--<section class="">
+    <div class="container d-flex justify-content-center">
+      <div class="row w-75 mt-5">
+        <div class="col-md-12">
+          <h2 class="text-center">Product List</h2>
+          <form
+            action="/admin/add_sub"
+            method="post"
+            enctype="multipart/form-data"
+          >
+            
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>-->
+  <!-- Table section -->
+ <!-- <section  mx-auto>
+    <div class="card-body">
+      <div class="row mt-5 mx-auto">
+        <div class="table-responsive">
+          <div class="table-responsive">
+            <table class="table align-middle table-nowrap mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="align-middle" scope="col">No:</th>
+                  <th class="align-middle" scope="col">product Name</th>
+                  <th class="align-middle" scope="col">Description</th>
+                  <th class="align-middle" scope="col">price</th>
+                  <th class="align-middle" scope="col">Category</th>
+                  <th class="align-middle" scope="col">Quantity</th>
+                  <th class="align-middle" scope="col">Image</th>
+                  <th class="align-middle" scope="col">option</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% response.forEach(function(response,index) { %>
+                <tr>
+                  <td><%=index+1 %> </td>
+                  <td><%=response.Productname%></td> 
+                  <td><%=response.ProductDescription%></td> 
+                  <td><%=response.Price%></td> 
+                  <td><%=response.category%></td> 
+                  <td><%=response.Quantity%></td> 
+                 
+                
+                  <td><img src='/uploads/<%= response.Image %>' alt="" style="width:50px;height:50px";></td>
+                  <td>
+                        <a href ="/admin/edit_product/<%=response._id %>"  class="btn btn-success"> <a href="/admin/edit_product/:id"Edit</a>
+                 
+                        <a href ="/admin/delete_product/<%=response._id %>" class="btn btn-danger"   onclick="return confirm('are you want to Delete <%=response.Productname%>?')">Delete</a>
+                  </td>
+    
+                 
+                </tr>
+          <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+         table-responsive end// 
+      </div>
+    </div>
+  </section>-->
+  <section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Products </h2>
+            <p>Add, edit or delete a product</p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                   <!-- <form action="/admin/products" method="post">
+                        <div class="mb-4">
+                            <label for="name" class="form-label">Product Name</label>
+                            <input type="text" placeholder="Type here" class="form-control" name="product"/>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Parent Category</label>
+                            <select name="parent" class="form-select">
+                                <option>Mobile</option>
+                                <option>Laptop</option>
+                            </select>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary"><a href="/admin/addproduct"></a> Create product</button>
+                        </div>
+                    </form>-->
+                    
+                    <a href="/admin/addproduct" class="btn btn-primary btn-sm rounded">Create new</a>
+                </div>
+                <div class="col-md-9">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>product Name</th>
+                                    <th>Description</th>
+                                    <th>Category</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Image</th>
+
+                                    <th>Action</th>
+                                    <th class="text-end"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for(var i = 0;i< productsData.length; i++) {%>
+                                <tr>
+                                    <td><%= i+1 %></td>
+                                    <td><%= productsData[i].itemName %></td>
+                                    <td><%= productsData[i].description %></td>
+                                    <td><%= productsData[i].category %></td>
+                                    <td><%= productsData[i].quantity %></td>
+                                    <td><%= productsData[i].price %></td>
+                                    <td><img src="/<%= productsData[i].images[0].path%>" alt="" srcset="" class="img-sm img-thumbnail"></td>
+                                    
+                                    
+                                    <td>
+                                        <div>
+                                            <a class="text-primary" href="/admin/products/edit/<%= productsData[i].id%>" onclick="return confirm('Are sure to Edit the <%=productsData[i].id %> product' )">Edit</a>
+                                           
+                                        </div>
+                                    </td>
+                                    <td><div>
+                                        
+                                        <a class="text-danger" href="/admin/products/delete/<%= productsData[i].id%>" onclick="return confirm('Are you sure you want to  delete the <%= productsData[i].id %> ' )">Delete</a>
+                                    </div></td>
+                                </tr>
+                                <%}%>
+                            </tbody>
+                        </table>
+                    </div>
+                </div> <!-- .col// -->
+            </div> <!-- .row // -->
+        </div> <!-- card body .// -->
+    </div> <!-- card .// -->
+</section> <!-- content-main end// -->
+

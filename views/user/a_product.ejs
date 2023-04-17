@@ -1,0 +1,117 @@
+<div class="product-details-area pb-100 pt-100">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="product-details-img-wrap product-details-vertical-wrap" data-aos="fade-up" data-aos-delay="200">
+                    <div class="product-details-small-img-wrap">
+                        <div class="swiper-container product-details-small-img-slider-1 pd-small-img-style">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <div class="product-details-small-img">
+                                        <img src="assets/images/product-details/pro-details-small-img-1.png" alt="Product Thumnail">
+                                    </div>
+                                </div>
+                                
+                                
+                                
+                               
+                            </div>
+                        </div>
+                        <div class="pd-prev pd-nav-style"> <i class="ti-angle-up"></i></div>
+                        <div class="pd-next pd-nav-style"> <i class="ti-angle-down"></i></div>
+                    </div>
+                    <div class="swiper-container product-details-big-img-slider-1 pd-big-img-style">
+                        <div class="swiper-wrapper">
+                            
+                            
+                            
+                            <%for(var i=0;i<oneProduct.images.length;i++){%>
+                            
+                            
+                            <div class="swiper-slide">
+                                <div class="easyzoom-style">
+                                    <div class="easyzoom easyzoom--overlay">
+                                        <!-- <a href="/products/addtocart/:<%=oneProduct.id%>"> -->
+                                            <a href="\<%= oneProduct.images[i].path%>">
+                                            <img src="\<%= oneProduct.images[i].path%>" alt="">
+                                        </a>
+                                    </div>
+                                    <a class="easyzoom-pop-up img-popup" href="\<%= oneProduct.images[i].path%>">
+                                        <i class="pe-7s-search"></i>    
+                                    </a>
+                                </div>
+                                <%}%>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <form action="/products/addtocart/<%= oneProduct.id%>" method="POST" id="addtocart">
+                    <div class="product-details-content" data-aos="fade-up" data-aos-delay="400">
+                        <h2><%= oneProduct.itemName%></h2>
+                        <div class="product-details-price">
+                            <input type="text" name="price" style="display: none;" value="<%= oneProduct.price%>">
+                            <input type="text" name="prodId" style="display: none;" value="<%= oneProduct._id%>">
+                            <span class="new-price">Rs.<%= oneProduct.price%></span>
+                        </div>
+                        <div class="product-details-action-wrap">
+                            <div class="product-quality">
+                                <input class="cart-plus-minus-box input-text qty text" name="quantity" value="1">
+                            </div>
+                             <div class="single-product-cart btn-hover">
+                                <a href="#" onclick="document.getElementById('addtocart').submit();">Add to cart</a>
+                            </div>
+                           
+                        </form>
+                        </div>
+                    <div class="product-details-meta">
+                        <ul>
+                            <li>
+                                <div class="product-list-action">
+                                   <form action="/add_to_wishlist/<%=oneProduct.id%>" method="POST">
+                                    <button type="submit"class="product-action-btn-2" title="Wishlist"><i class="pe-7s-like"></i></button>
+                                </form>
+                                </div>
+                            </li>
+                            <li>
+                            <p><strong>Description : </strong><%=oneProduct.description%></p></li>
+                            <!-- <li><span class="title">Code</span> Ch-256xl</li> -->
+                            <li><span class="title"> <strong>   Category:</strong><%=oneProduct.category%></span>
+                                
+                            </li>
+
+                            
+                        </ul>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <script src="products/assets/js/vendor/modernizr-3.11.7.min.js"></script> 
+<script src="products/assets/js/vendor/jquery-3.6.0.min.js"></script>
+<script src="products/assets/js/vendor/jquery-migrate-3.3.2.min.js"></script>
+<script src="products/assets/js/vendor/popper.min.js"></script>
+<script src="products/assets/js/vendor/bootstrap.min.js"></script>
+<script src="products/assets/js/plugins/wow.js"></script>
+<script src="products/assets/js/plugins/scrollup.js"></script>
+<script src="products/assets/js/plugins/aos.js"></script>
+<script src="products/assets/js/plugins/magnific-popup.js"></script>
+<script src="products/assets/js/plugins/jquery.syotimer.min.js"></script>
+<script src="products/assets/js/plugins/swiper.min.js"></script>
+<script src="products/assets/js/plugins/imagesloaded.pkgd.min.js"></script>
+<script src="products/assets/js/plugins/isotope.pkgd.min.js"></script>
+<script src="products/assets/js/plugins/jquery-ui.js"></script>
+<script src="products/assets/js/plugins/jquery-ui-touch-punch.js"></script>
+<script src="products/assets/js/plugins/jquery.nice-select.min.js"></script>
+<script src="products/assets/js/plugins/waypoints.min.js"></script>
+<script src="products/assets/js/plugins/counterup.min.js"></script>
+<script src="products/assets/js/plugins/select2.min.js"></script>
+<script src="products/assets/js/plugins/easyzoom.js"></script>
+<script src="products/assets/js/plugins/slinky.min.js"></script>
+<script src="products/assets/js/plugins/ajax-mail.js"></script>
+ Main JS 
+<script src="products/assets/js/main.js"></script-->

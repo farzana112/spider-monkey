@@ -1,0 +1,67 @@
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Categories </h2>
+            <p>Add, edit or delete a parent category </p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <form action="/admin/parentcat" method="post">
+                        <div class="mb-4">
+                            <label for="name" class="form-label"> Parent Category Name</label>
+                            <input type="text" placeholder="Type here" class="form-control" name="category"/>
+                        </div>
+                        <!-- <div class="mb-4">
+                            <label class="form-label">Parent Category</label>
+                            <select name="parent" class="form-select">
+                                <option>Mobile</option>
+                                <option>Laptop</option>
+                            </select>
+                        </div> -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Create category</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-9">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th> Parent Category Name</th>
+                                    <!-- <th>Parent Category</th> -->
+                                    <th>Action</th>
+                                    <th class="text-end"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for(var i = 0;i< parentData.length; i++) {%>
+                                <tr>
+                                    <td><%=i+1%></td>
+                                    <td><%=parentData[i].category%></td>
+                                    <td>
+                                        <div>
+                                            <a class="text-primary" href="/admin/editcat/<%= parentData[i].id%>" onclick="return confirm('Are you sure to Edit the <%= parentData[i].category %> category' )">Edit</a>
+                                           
+                                        </div>
+                                    </td>
+                                    <td><div>
+                                        
+                                        <a class="text-danger" href="/admin/delete_category/<%=parentData[i].id%>" onclick="return confirm('Are you sure to delete the <%= parentData[i].category %> category' )">Delete</a>
+                                    </div></td>
+                                </tr>
+                                <%}%>
+                            </tbody>
+                            
+                        </table>
+                    </div>
+                </div> <!-- .col// -->
+            </div> <!-- .row // -->
+        </div> <!-- card body .// -->
+    </div> <!-- card .// -->
+</section> <!-- content-main end// -->
+
