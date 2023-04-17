@@ -516,13 +516,13 @@ async function orderCount(){
   ]);
   
   
-  return orderCount[0].orderCount;
+  return orderCount[0]?.orderCount;
   
 
 }
  async function productCount(){
  
-  const count = await productModel.estimatedDocumentCount({});
+  const count = await productModel?.estimatedDocumentCount({});
  
   return count;
   
@@ -530,7 +530,7 @@ async function orderCount(){
 
 async function userCount(){
   
-  const count=await userModel.estimatedDocumentCount({})
+  const count=await userModel?.estimatedDocumentCount({})
   return count
 }
 
@@ -544,7 +544,7 @@ async function razorpayOrders(){
 
   
  
-  order=orderCount[0].orderCount
+  order=orderCount[0]?.orderCount
   
 
   return order;
@@ -561,7 +561,7 @@ async function codOrders(){
   ]);
   
   
- let order=orderCount[0].orderCount
+ let order=orderCount[0]?.orderCount
   
   return order;
 }
