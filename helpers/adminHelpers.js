@@ -575,7 +575,7 @@ async function processOrders(){
   ]);
 
   
-  let order=orderCount[0].orderCount
+  let order=orderCount[0]?.orderCount
   
   return order;
 
@@ -606,7 +606,7 @@ async  function cancelOrders(){
 
  
   
-  let order=orderCount[0].orderCount
+  let order=orderCount[0]?.orderCount
  
   return order;
 
@@ -622,7 +622,7 @@ async function deliverOrders(){
 
  
   
-  let order=orderCount[0].orderCount
+  let order=orderCount[0]?.orderCount
   
   return order;
   
