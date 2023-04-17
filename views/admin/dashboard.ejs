@@ -63,7 +63,7 @@
           ></span>
           <div class="text">
             <h6 class="mb-1 card-title">Revenue</h6>
-            <span>₹<%=locals.total.toLocaleString('en-IN')%></span>
+            <span>₹<%=locals.total?.toLocaleString('en-IN')%></span>
             <span class="text-sm"> Shipping fees are not included </span>
           </div>
         </article>
@@ -77,7 +77,7 @@
           ></span>
           <div class="text">
             <h6 class="mb-1 card-title">Delivered Orders</h6>
-            <span><%=locals.deliveredOrderCount%></span>
+            <span><%=locals?.deliveredOrderCount%></span>
             <span class="text-sm"> Excluding orders in transit </span>
           </div>
         </article>
@@ -91,7 +91,7 @@
           ></span>
           <div class="text">
             <h6 class="mb-1 card-title">Total Products</h6>
-            <span><%=locals.productsCount%></span>
+            <span><%=locals?.productsCount%></span>
           </div>
         </article>
       </div>
@@ -104,7 +104,7 @@
           ></span>
           <div class="text">
             <h6 class="mb-1 card-title">Total Users</h6>
-            <span><%=locals.usersCount%></span>
+            <span><%=locals?.usersCount%></span>
           </div>
         </article>
       </div>
@@ -149,23 +149,23 @@
 
   
   <p style="visibility: hidden" id="rp">
-    <%=JSON.stringify(locals.rpCount) %>
+    <%=JSON.stringify(locals?.rpCount) %>
   </p>
   <p style="visibility: hidden" id="cod">
-    <%=JSON.stringify(locals.codCount) %>
+    <%=JSON.stringify(locals?.codCount) %>
   </p>
 
   <p style="visibility: hidden" id="cancel">
-    <%=JSON.stringify(locals.cancelOrders) %>
+    <%=JSON.stringify(locals?.cancelOrders) %>
   </p>
   <p style="visibility:hidden" id="ship">
-    <%=JSON.stringify(locals.shippedOrders)%>
+    <%=JSON.stringify(locals?.shippedOrders)%>
   </p>
   <p style="visibility:hidden" id="process">
-    <%=JSON.stringify(locals.proOrders)%>
+    <%=JSON.stringify(locals?.proOrders)%>
   </p>
   <p style="visibility:hidden" id="deliver">
-    <%=JSON.stringify(locals.deliverOrders)%>
+    <%=JSON.stringify(locals?.deliverOrders)%>
   </p>
 </div>
 
