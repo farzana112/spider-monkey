@@ -55,7 +55,7 @@ function getlogin(req, res) {
   } else {
     res
       .render("admin/login", { layout: "layouts/adminloginlayout", error })
-      .status(200);
+      
   }
 }
 
@@ -81,7 +81,7 @@ console.log(req.session.logIn);
     });
 
     res.redirect("/admin/dashboard");
-    next();
+    
   } else {
     error = true;
     res.redirect("/admin");
