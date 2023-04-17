@@ -97,8 +97,9 @@ function getlogout(req, res) {
       console.log(err);
       res.status(404);
     } else {
+      error=true
       res.clearCookie("connect.sid");
-      return res.render("admin/login",{layout:"layouts/adminloginlayout",adminStatus});
+      return res.render("admin/login",{layout:"layouts/adminloginlayout",adminStatus,error});
     }
   });
 }

@@ -6,7 +6,7 @@
   </head>
   <body>
     <h3>Razorpay Checkout</h3>
-    <p>Please wait while we redirect you to the payment page...</p>
+    <p>Please wait while we confirm your order...</p>
     <script>
       var orderId = '<%= order.id %>';
       var options = {
@@ -41,9 +41,25 @@
       rzp1.open();
 
 
-     function  verifyPayment(){
+      const verifyPayment = async (details) => {
+    console.log('hiii');
+    try {
+        const crypto = require('crypto')
+        let hmac = crypto.createHmac('sha256', razorpay.secret_id)
+        hmac.update(details['payment[razorpay_order_id]'] + "|" + details['payment[razorpay_payment_id]'])
+        hmac = hmac.digest('hex')
+        if (hmac == details['payment[razorpay_signature]']) {
+            return Promise.resolve()
+        } else {
+            return Promise.reject("not match")
+        }
+    } catch (err) {
+        return Promise.reject(err)
+    }
+}
 
-      }
+        
+  
     </script>
   </body>
 </html>

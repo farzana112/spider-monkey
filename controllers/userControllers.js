@@ -489,7 +489,7 @@ userHelpers.orderCreate(newOrder,req,res).then((orderId)=>{
   
   if(req.body['payment-method']=='COD'){
 
-  res.render('user/orderconfirm',{customerName})}
+  res.render('user/orderconfirm',{layouts:"layouts/userlayout",customerName})}
 
   else if(req.body['payment-method']=='RazorPay'){
    
@@ -521,8 +521,9 @@ function orderItemDetails(req,res){
 
   const slug=req.params.slug;
   const orderData=req.session.orderData
-  
+ 
   const itemData=req.session.itemData
+  
 const idSlug = slugify(slug, { lower: true })
   const orderIdAlias = 'my-order-id'
   const orderDetails = orderData.find((order) => order.id == slug)
@@ -530,7 +531,7 @@ const user=req.session.user;
 const name=user.name
 
   userHelpers.statusUpdate(orderData).then((orderData)=>{
-
+delete req.session.itemData
     res.render('user/orderdetails',{layout:"layouts/userlayout",orderDetails,itemData,name,formatDate,convertOrderId,orderData})
   })
 

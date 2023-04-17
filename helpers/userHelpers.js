@@ -686,7 +686,7 @@ async function searchPost(searchData) {
   
 
     if (!product) {
-      return
+      return 
     }
     else{
       const parentData=await parentModel.find({})
