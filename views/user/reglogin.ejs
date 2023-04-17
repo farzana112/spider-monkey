@@ -301,7 +301,7 @@ function validateConfirmPassword(){
 
 }
   function validateForm() {
-    if (!validateName() || !validateEmail() || !validatePhone() || !validatePassword() || validateConfirmPassword()) {
+    if (!validateName() || !validateEmail() || !validatePhone() || !validatePassword() || !validateConfirmPassword()) {
       submitError.style.display = "block";
       submitError.innerHTML = "Please fix all errors to submit.";
       setTimeout(function () {
