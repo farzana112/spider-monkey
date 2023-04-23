@@ -5,14 +5,14 @@
           <h2 class="text-center">Edit Banner</h2>
           <form action="/admin/edit_banner?editbanner=<%=response._id%>" method="POST" enctype="multipart/form-data">
             <label for="">Title</label>
-            <input type="text" name="title" class="form-control" value="<%=response.title%>" />
+            <input type="text" name="title" class="form-control" value="<%=response.title%>" required />
             <label for="">Description</label>
             <input type="text" name="description" class="form-control" value="<%=response.description%>" />
             <label for="">Link</label>
             <input type="text" name="link" class="form-control" value="<%=response.link%>" />
             <label for="">Image</label>
           <img src="/uploads/<%=response?.image%>" alt="" style="width:100px;height:auto ">
-            <input type="file" name="image1" class="form-control" />
+            <input type="file" name="image1" class="form-control" required />
             <button type="submit" class="btn btn-success mt-4">Submit</button>
           </form>
         </div>

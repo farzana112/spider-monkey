@@ -5,10 +5,12 @@ const cartSchema = new mongoose.Schema({
 
     cartItems:[
         {
-            product:{type:mongoose.Schema.Types.ObjectId,ref:'Products',required:true},
-            quantity:{type:Number,default:1,required:true},
-            price:{type:Number,required:true},
-            prod:{type:String,required:true}
+            // product:{type:mongoose.Schema.Types.ObjectId,ref:'Products',required:true},
+            // quantity:{type:Number,default:1,required:true},
+            // price:{type:Number,required:true},
+            // prod:{type:String,required:true}
+
+            product:{type:String}
         
         }
     ]

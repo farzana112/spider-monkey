@@ -110,7 +110,8 @@ async function editCategory(idToEdit) {
         `Error at finding the Eidt Category from the DB, refer the error : ${error}`
       )
     );
-  return forEditCategory;
+    let parentData=await parentModel.find({})
+  return [forEditCategory,parentData];
 }
 
 async function editCategoryPost(req, res) {
@@ -249,9 +250,10 @@ async function editProduct(idToEdit) {
         `Error at finding the Edit Product from the DB, refer the error : ${error}`
       )
     );
+    const parentData=await parentModel.find({})
   
   
-  return forEditProduct;
+  return [forEditProduct,parentData];
 }
 
 async function editProductPost(req, res) {
@@ -326,6 +328,36 @@ async function listBanners(){
   const response=await bannerModel.find({})
 return response
 }
+
+async function bannerEdit(bannerId){
+  
+    try {
+      let bannerid = await bannerModel.findOne({ _id: bannerId });
+      console.log(bannerid);
+      return bannerid;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async function postEditBanner(bannerid, texts, Image) {
+    try {
+      let response = await bannerModel.updateOne({ _id: bannerid }, {
+        $set: {
+          title: texts.title,
+          description: texts.description,
+          // created_at: updated_at,
+          link: texts.link,
+          image: Image
+        }
+      });
+      return response;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+  
 
 
 async function listOrder(pageNum, perPage) {
@@ -731,7 +763,8 @@ module.exports = {
   addBanner,
   listBanners,
   listOrder,
-
+bannerEdit,
+postEditBanner,
   statusChange,
   orderDetails,
   viewReport,

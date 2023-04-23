@@ -11,15 +11,17 @@
 
 <div class="customer-zone mb-20">
   <p class="cart-page-title">Have a coupon? <a class="checkout-click3" href="#">Click here to enter your code</a></p>
+  <div>
   <form id="coupon-form" action="/userCouponPost" method="POST">
-  <div class="checkout-login-info3">
+  <!-- <div class="checkout-login-info3"> -->
       
-          <input name ="couponCode" type="text" placeholder="Coupon code">
-          <button type="submit"  >Apply Coupon</button>
+          <input name ="couponCode" type="text" placeholder="Coupon code" style="width:50%; height:auto;" required>
+          <button style="background-color: rgba(243, 166, 22, 0.687);" type="submit"  >Apply Coupon</button  >
           <div id="errormsg"></div>
       </form>
   </div>
 </div>
+
 
 <div class="container">
  

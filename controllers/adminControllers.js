@@ -97,7 +97,7 @@ function getlogout(req, res) {
       console.log(err);
       res.status(404);
     } else {
-      error=true
+      error=false
       res.clearCookie("connect.sid");
       return res.render("admin/login",{layout:"layouts/adminloginlayout",adminStatus,error});
     }
@@ -191,8 +191,10 @@ function postCategory(req, res) {
 
 function getOneCategory(req, res) {
   let idToEdit = req.params.id;
-  adminHelpers.editCategory(idToEdit).then((forEditCategory) => {
-    return res.render("admin/editcategory", {adminStatus, forEditCategory });
+  adminHelpers.editCategory(idToEdit).then((resultArray) => {
+    const forEditCategory=resultArray[0];
+    const parentData=resultArray[1]
+    return res.render("admin/editcategory", {adminStatus, forEditCategory,parentData });
   });
 }
 
@@ -302,8 +304,10 @@ function postProduct(req, res) {
 
 function getOneProduct(req, res) {
   let idToEdit = req.params.id;
-  adminHelpers.editProduct(idToEdit).then((forEditProduct) => {
-    return res.render("admin/editproduct", {adminStatus, forEditProduct });
+  adminHelpers.editProduct(idToEdit).then((resultArray) => {
+    const forEditProduct=resultArray[0];
+    const parentData=resultArray[1]
+    return res.render("admin/editproduct", {adminStatus, forEditProduct ,parentData});
   });
 }
 
@@ -336,11 +340,26 @@ function listBanners(req,res){
 
 }
 
-function editBanner(req,res){
-  res.render("admin/editbanner",{adminStatus})
+function getEditBanner(req,res){
+const bannerId=req.query.banner
+
+  adminHelpers.bannerEdit(bannerId).then((response) => {
+
+    res.render('admin/editbanner', {  response, adminStatus })
+  })
 
 
 }
+
+//post edit banner
+
+function postEditBanner(req, res) {
+  adminHelpers.postEditBanner(req.query.editbanner, req.body, req?.file?.filename)
+    .then((response) => {
+      res.redirect('/admin/list-banner');
+    });
+}
+
 async function orderList(req,res){
   const pageNum=req.query.page||1;
   const perPage=10;
@@ -534,7 +553,8 @@ module.exports = {
   getAddBanner,
   postBanner,
   listBanners,
-  editBanner,
+  getEditBanner,
+  postEditBanner,
   orderList,
   updateStatus,
   convertOrderId,

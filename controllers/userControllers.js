@@ -197,7 +197,8 @@ function postVerifyOTP(req, res) {
   });
 }
 
-function sendOTP(){}
+// function sendOTP(){}
+
 function sendAOTP(req,res){
 res.render("user/otp")
 }
@@ -211,13 +212,15 @@ userHelpers.forProfilePage(user).then((response)=>{
   const{orderData,itemData,userData,addressData}=response
 req.session.orderData=orderData
 
-  req.session.itemData=itemData
+
+req.session.itemData = itemData;
+console.log("orderItens");
+console.log(req.session.orderItems);
 
 
+   res.render('user/profile',{layout:"layouts/userlayout",name,orderData,formatDate,convertOrderId,itemData:req.session.itemData,userData,addressData})
 
-   res.render('user/profile',{layout:"layouts/userlayout",name,orderData,formatDate,convertOrderId,itemData,userData,addressData})
-
-
+   
 
    
 })
@@ -244,14 +247,12 @@ let user=req.session.user;
 
  function updatePassword(req,res){
 
-  let user=req.session.user;
-  console.log("_id              !!!!!   !!")
-  console.log(req.session.user._id)
-  let userId=req.session.user._id
+  const user=req.session.user;
+  
+  const userId=req.session.user._id
 
   
   
-  console.log("userid from updatePassword      :       ");
   const{currentPassword,newPassword,confirmPassword }=req.body
   userHelpers.changePassword(userId,currentPassword,newPassword,confirmPassword).then((password)=>{
     res.redirect('/userprofile?password=' + password);
@@ -311,6 +312,26 @@ async function shopProduct(req, res) {
   });
 }
 
+//new cart section
+// async function getAddToCart(req,res){
+//   try {
+    
+
+//     await userHelpers.addToCart(req.params.id, req.session.user.id).then((data) => {
+//       res.json({ status: true });
+//     });
+//   } catch (error) {
+//     res.status(500)
+//   }
+// }
+
+
+function getViewCart(req,res){
+  res.render("user/view-cart")
+}
+
+
+
 //cart -section
 
 function showCart(req, res) {
@@ -346,6 +367,8 @@ async function addToCart(req, res) {
       prod: req.params.id,
     },
   };
+  console.log("product to the cart");
+  console.log(productToTheCart);
   
   userHelpers.addCart(productToTheCart).then((cart) => {
     req.session.cartId = cart.id;
@@ -462,6 +485,8 @@ function postCheckOut(req, res) {
 
 
 req.session.orderItems=orderItems
+console.log("orderItems ar post checkout");
+console.log(orderItems);
 
 
   
@@ -489,7 +514,7 @@ userHelpers.orderCreate(newOrder,req,res).then((orderId)=>{
   
   if(req.body['payment-method']=='COD'){
 
-  res.render('user/orderconfirm',{layouts:"layouts/userlayout",customerName})}
+  res.render('user/orderconfirm',{layout:"layouts/userlayout",customerName})}
 
   else if(req.body['payment-method']=='RazorPay'){
    
@@ -519,10 +544,13 @@ function getorderPage(req, res) {
 
 function orderItemDetails(req,res){
 
-  const slug=req.params.slug;
+  const slug=req.params.id;
   const orderData=req.session.orderData
  
-  const itemData=req.session.itemData
+  let itemData=req.session.itemData
+  console.log("from order item details");
+  console.log(req.session.orderItems);
+  
   
 const idSlug = slugify(slug, { lower: true })
   const orderIdAlias = 'my-order-id'
@@ -531,8 +559,14 @@ const user=req.session.user;
 const name=user.name
 
   userHelpers.statusUpdate(orderData).then((orderData)=>{
-delete req.session.itemData
+    console.log("itemData before deletion");
+    console.log(itemData);
+   
+console.log("item Data after the deletion");
+;
     res.render('user/orderdetails',{layout:"layouts/userlayout",orderDetails,itemData,name,formatDate,convertOrderId,orderData})
+    itemData.length = 0; // clear the itemData array
+    console.log(itemData)
   })
 
 
@@ -564,10 +598,13 @@ function logout(req, res) {
   res.render("user/reglogin",{layout:"layouts/userlayout"});
 }
 
+
+//       Wish List
+
 function addToWishlist(req,res){
 
   let prodId=req.params.id
-  console.log("product Id"+prodId);
+ 
    let userId=req.session.user.id
 
 
@@ -582,7 +619,7 @@ function addToWishlist(req,res){
 }
 
 function listWishlist(req,res){
-  let userId=req.session.user.id
+  const userId=req.session.user.id
  
   userHelpers.listWish(req.session.user.id,res).then((wishlistItems)=>{
     
@@ -607,9 +644,16 @@ function deleteWishItem(req, res) {
 }
   
 function postSearch(req,res){
-
+let product
   userHelpers.searchPost(req.body).then((resultArray)=>{
-    const product=resultArray[0]
+    if(resultArray[0]==null){
+      product = null
+
+    }
+    else{
+      product=resultArray[0]
+
+    }
     const parentData=resultArray[1]
    res.render("user/shopsearch",{layout:"layouts/userlayout",product,parentData})
 
@@ -761,12 +805,13 @@ module.exports = {
   postSignup,
   postSigin,
   forProducts,
-  sendOTP,
+  
   postVerifyOTP,
   shopProduct,
   forOneProduct,
   showCart,
   addToCart,
+  
   
   logout,
   sendAOTP,
@@ -790,7 +835,7 @@ module.exports = {
   clearItemData,
   showWishList,
   addToWishlist,
-  
+  getViewCart,
   listWishlist,
   deleteWishItem,
   postSearch,

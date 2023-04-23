@@ -1,3 +1,11 @@
+<head>
+    <!-- Include the SweetAlert CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.min.css">
+
+<!-- Include the SweetAlert JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.min.js"></script>
+
+</head>
 <div class="slider-area">
     <div class="slider-active swiper-container">
         <div class="swiper-wrapper">
@@ -97,6 +105,7 @@
             <div class="col-lg-6 col-md-6 col-12">
                 <div class="banner-wrap mb-30" data-aos="fade-up" data-aos-delay="400">
                     <a href="/"><img src="assets/images/banner/samsungs22.jpg" alt=""></a>
+                    
                     <div class="banner-content-5">
                        
                         <h2 class="text-primary">Mobiles</h2>
@@ -104,6 +113,7 @@
                             <a class="btn hover-border-radius" href="/shop">Shop Now</a>
                         </div>
                     </div>
+                
                 </div>
             </div>
         </div>
@@ -201,9 +211,15 @@
                                     <!-- <i class="pe-7s-look"></i> -->
                                 <!-- </button> -->
                             </div>
-                            <!-- <div class="product-action-2-wrap">
-                                <button class="product-action-btn-2" title="Add To Cart"><i class="pe-7s-cart"></i> Add to cart</button>
-                            </div> -->
+                            <div class="product-action-2-wrap">
+                                <button type="button" class="product-action-btn-2" title="Add To Cart" onclick="addtocart('<%-productsData[i].id%>'), Swal.fire({
+                                    position: 'center',
+                                    icon: 'success',
+                                    title: 'Item Added Successfully To Cart',
+                                    showConfirmButton: false,
+                                    timer: 2000
+                                  })"><i class="pe-7s-cart"></i> Add to cart</button>
+                            </div>
                         </div>
                         <div class="product-content">
                             <h3><a href="/products/<%=productsData[i].id%>"><%= productsData[i].itemName%></a></h3>
@@ -222,3 +238,14 @@
         </div>
     </div>
 </div>
+<script>
+function addtocart(proId) {
+    $.ajax({
+      url: '/add_to_cart/' + proId,
+      method: 'get',
+      success: (response) => {
+        window.location.href='/view_cart';
+      },
+    });
+  }
+</script>

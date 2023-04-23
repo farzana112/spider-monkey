@@ -14,13 +14,23 @@
                             <label for="name" class="form-label">Category Name</label>
                             <input type="text" placeholder="Type here" class="form-control" name="category" value="<%= forEditCategory.category%>" />
                         </div>
-                        <div class="mb-4">
+                        <!-- <div class="mb-4">
                             <label class="form-label">Parent</label>
                             <select name="parent" class="form-select" value="<%= forEditCategory.parent%>">
                                 <option>Mobiles</option>
                                 <option>Laptops</option>
                             </select>
-                        </div>
+                        </div> -->
+
+                        <div class="mb-4">
+                            <label class="form-label">Parent</label>
+                            <select name="parent" class="form-select" value="<%= forEditCategory.parent%>">
+                              <% for (let i = 0; i < parentData.length; i++) { %>
+                                <option <% if (parentData[i].category=== forEditCategory.parent) { %>selected<% } %>><%= parentData[i].category %></option>
+                              <% } %>
+                            </select>
+                          </div>
+                          
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary">Edit category</button>
                         </div>

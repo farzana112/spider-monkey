@@ -43,7 +43,7 @@ router.post('/categories/edit/:id',adminController.authenticate,adminController.
 
 router.get('/categories/delete/:id',adminController.authenticate,adminController.categoryDelete);
 
-//parent categories
+//parent categories Operations
 router.get('/parentcat',adminController.authenticate,adminController.getcats)
 
 
@@ -86,8 +86,10 @@ router.delete('/products_delete/:id',adminController.authenticate,adminControlle
 router.get('/add-banner',adminController.authenticate,adminController.getAddBanner)
 router.post('/post-banner',uploads.addBannerupload,adminController.authenticate, adminController.postBanner);
 router.get('/list-banner',adminController.authenticate,adminController.listBanners)
-router.get('/edit-banner',adminController.authenticate,adminController.editBanner)
 
+//Banner edit
+router.get('/edit_banner',adminController.authenticate,adminController.getEditBanner)
+router.post("/edit_banner", uploads.editBannerupload, adminController.authenticate, adminController.postEditBanner)
   
 //   Coupons
 router.get('/add_coupon',adminController.authenticate,adminController.addCoupon)

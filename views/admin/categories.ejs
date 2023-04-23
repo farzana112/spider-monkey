@@ -1,3 +1,7 @@
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.min.css">
+</head>
 <section class="content-main">
     <div class="content-header">
         <div>
@@ -68,6 +72,25 @@
                                     <td><div>
                                         
                                         <a class="text-danger" href="/admin/categories/delete/<%= categories[i].id%>" onclick="return confirm('Are sure to delete the <%= categories[i].category %> category' )">Delete</a>
+                                        <!-- <a class="text-danger" href="/admin/categories/delete/<%= categories[i].id%>"
+                                            onclick="event.preventDefault();
+                                                     console.log('Clicked delete for category:'); 
+                                                     swal({
+                                                         title: 'Are you sure?',
+                                                         text: 'You are about to delete the <%= categories[i].category %> category',
+                                                         icon: 'warning',
+                                                         buttons: ['Cancel', 'Delete'],
+                                                         dangerMode: true,
+                                                     }).then((willDelete) => {
+                                                         if (willDelete) {
+                                                             window.location.href = '/admin/categories/delete/<%= categories[i].id%>';
+                                                         } else {
+                                                             swal('The <%= categories[i].category %> category is safe!');
+                                                         }
+                                                     });">Delete</a>
+                                          -->
+                                         
+                                          
                                     </div></td>
                                 </tr>
                                 <%}%>

@@ -53,31 +53,6 @@ async function signup(req, res) {
   return newUser;
 }
 
-/*async function signup(req,res){
-
-  const {name,email,contactNumber,password} = req.body;
-// Checking the existing user
-  const existingUser = await userModel.findOne({$or:[{email:email}]})
-                                      .catch(error=>console.log(`Error at finding the email id form the DB, refer the error : ${error}`))
-  if(existingUser){
-
-      return false
-  }
-
-      let pass = password.toString();
-      const hashedPassword = await bcrypt.hash(pass,10);
-//User Creation
-      const newUser = await userModel.create({
-          id: uuidv4(),
-          name : name,
-          email : email,
-          hashedPassword : hashedPassword,
-          contactNumber : contactNumber,
-      });
-     //console.log(newUser)
-    return newUser
-
-}*/
 
 async function signin(req, res) {
   
@@ -132,27 +107,16 @@ async function loginOtp(contactNumber) {
   } else if (user.blocked) {
     return true;
   } else {
-    // console.log("User      :    " + user);
+    
     return user;
   }
 }
 
 function sendOTP(req, res) {
-  /*const accountSid = "ACeb5bb83b2702e34b066334b18e2034d3";
-  const authToken = "8338bce61af5e0ea3be6f201c698d256";
-  const client = require("twilio")(accountSid, authToken);
-  otpgen = Math.floor(1000 + Math.random() * 9000);
-
-  client.messages
-    .create({
-      body: `your otp is ${otpgen}`,
-      from: "+14308085738",
-      to: "+918089110473",
-    })
-    .then((message) => console.log(message.sid));*/
+ 
 }
 
-//verify otp login post method
+
 
 
 
@@ -304,17 +268,108 @@ async function removeCartItem(itemTodelete) {
   return removeItem;
 }
 
+
+
+
+
+//new cart
+
+// async function addToCart(proId,userId){
+//   console.log("A");
+//  let  proObj = {
+//     productId: proId,
+//     Quantity: 1,
+// };
+// let carts = await cartModel.findOne({ user: userId });
+
+//   if (carts) {
+//     let productExist = carts.cartItems.findIndex(
+//         (cartItems) => cartItems.product == proId
+//     );
+//     if (productExist != -1) {
+//         cartModel
+//             .updateOne(
+//                 { user: userId, "cartItems.product": proId },
+//                 {
+//                     $inc: { "cartItems.$.quantity": 1 },
+//                 }
+//             )
+//             .then(() => {
+//                 resolve();
+//             });
+//     } else {
+//         await cartModel
+//             .updateOne(
+//                 { user: userId },
+//                 {
+//                     $push: {
+//                         cartItems: proObj,
+//                     },
+//                 }
+//             )
+//             .then((response) => {
+//                 resolve(response);
+//             });
+//     }
+// }
+
+// }
+
+// async function addToCart(proId, userId) {
+//   console.log("A");
+//   const proObj = {
+//     productId: proId,
+//     quantity: 1,
+//   };
+//   try {
+    
+//     const cart = await cartModel.findOne({ user: userId });
+//     if (cart) {
+//       const existingProductIndex = cart.cartItems.findIndex(
+//         (cartItem) => cartItem.product === proId
+//       );
+//       if (existingProductIndex !== -1) {
+//         await cartModel.updateOne(
+//           { user: userId, "cartItems.product": proId },
+//           { $inc: { "cartItems.$.quantity": 1 } }
+//         );
+       
+//         } else {
+//         await cartModel.updateOne(
+//           { user: userId },
+//           { $push: { cartItems: proObj } }
+//         );
+//       }
+//     } else {
+//       const newCart = new cartModel({
+//         user: userId,
+//         cartItems: [proObj],
+//       });
+//       await newCart.save();
+//     }
+
+//   let updatedCart = await cartModel.findOne({ user: userId }).populate("cartItems.product");
+//   console.log("updatedCart");
+//   console.log(updatedCart);
+// return
+   
+//   }catch (err) {
+//     console.error(err);
+//     throw new Error("Failed to add product to cart");
+//   }
+// }
+
+
 async function addWishlist(prodId,userId){
 
-  console.log("reached Helpers")
+  
   let proObj={
     productId:prodId
   }
   let wishlistItem = await productModel.findOne({ id: prodId });
-  //  console.log(wishlistItem);
-  // if(wishlistItem)
+ 
 let wishlist=await wishModel.findOne({user:userId});
-console.log("wishlist"+wishlist);
+
 if(wishlist){
   let productExist =  wishlist.wishitems.findIndex((item) => item.productId === prodId);
 
@@ -683,16 +738,16 @@ async function searchPost(searchData) {
     console.log("search term: " + searchTerm);
 
     const product = await productModel.findOne({ itemName: { $regex: new RegExp(searchTerm, 'i') } });
-  
+    const parentData=await parentModel.find({})
 
-    if (!product) {
-      return 
-    }
-    else{
-      const parentData=await parentModel.find({})
+    // if (!product) {
+    //   return 
+    // }
+    // else{
+      
       // console.log(parentData)
       return [product,parentData]
-    }
+    // }
 
     // Do something with the product if found
   } catch (error) {
@@ -762,6 +817,7 @@ module.exports = {
   viewCart,
   sendOTP,
   clearCart,
+  
   removeCartItem,
   address,
   forproducts,

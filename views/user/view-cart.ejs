@@ -1,0 +1,148 @@
+
+<main class="main">
+       
+    <section class="mt-50 mb-50">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="table-responsive">
+                    
+                        <table class="table shopping-summery text-center clean">
+                            <thead>
+                                <tr class="main-heading">
+                                
+                                    <th scope="col">Image</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Quantity</th>
+                                    <!-- <th scope="col">Subtotal</th> -->
+                                    <th scope="col">Remove</th>
+                                </tr>
+                            </thead>
+                         
+                            <tbody>
+                               
+                                <tr>
+                                
+                                   
+                                    <td class="product-des product-name">
+                                        <h5 class="product-name"><a href="shop-product-right.html">Productname</a></h5>
+                                        <p class="font-xs">category</p> 
+                                        <p class="font-xs">ProductDescription</p> 
+                                       
+                                    </td>
+                                    <td class="price" cartItemss-title="Price"><span>Price</span></td>
+                                    <td class="text-center" cartItemss-title="Stock">
+                                        <h6 id="stockMessage" class="message" style="color: red;"></h6>
+                                        
+                                            <button class="cart-item-count "
+                                                    onclick="changeQuantity()">-</button>
+                                            
+                                            <span id=" cartItems.item ">
+                                                 cartItems.quantity
+                                            </span>
+                                        <!-- if(cartItems.cartItems.Quantity> cartItems.quantity){ -->
+                                                 <button class="cart-item-count"
+                                                        onclick="changeQuantity()">+</button>
+                                                    
+                                                
+                                        
+                                    </td>
+                                    <h2 style="display: none;" id="Quantity">
+                                        cartItems.cartItems.Quantity
+                                    </h2>
+                                    <!-- <td class="text-right" cartItemss-title="cartItems">
+                                        <span>hlo </span>
+                                    </td> -->
+                                    <td class="action" cartItemss-title="Remove"><button class="text-muted" onclick="removeItem()"><i class="fi-rs-trash"></i></button></td>
+                                  
+                                </tr>
+                                
+                                
+                              
+                                
+                         
+                            </tbody>
+                         
+                        </table>
+                    </div>
+                   
+                    <div class="divider center_icon mt-50 mb-50"><i class="fi-rs-fingerprint"></i></div>
+                    <div class="row mb-50 d-flex justify-content-center">
+                        <div class="col-lg-12 col-md-12 d-flex justify-content-center">
+                           
+                           
+                            
+                            <div class="mb-30 mt-50">
+                                <div class="heading_s1 mb-3">
+                                    <h4>Apply Coupon</h4>
+                                </div>
+                                <div class="total-amount">
+                                    <div class="left">
+                                        <div class="coupon">
+                                            <form action="" >
+                                                <div class="form-row row justify-content-center">
+                                                    <div class="form-group col-lg-9">
+                                                        <input id="code" class="font-medium" name="Coupon" placeholder="Enter Your Coupon">
+                                                    </div>
+                                                    <div class="form-group col-lg-3">
+                                                      <button type="button" class="btn  btn-sm"
+                                                      onclick="validatecoupon()"><i
+                                                          class="fi-rs-label mr-10"></i>Apply</button>
+                          
+                          
+                                                    </div>
+                                                    <h6 id="successMesage"></h6>
+                                                    <h6 id="couponUsedErr" class="message" style="color: red;"></h6>
+                                                </div>
+                                            </form>
+                                            <span class="couponErr"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <div class="border p-md-4 p-30 border-radius cartItems-totals">
+                                <div class="heading_s1 mb-3">
+                                    <h4>cartItems Totals</h4>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr>
+                                                <td class="cartItems_total_label">cartItems Subtotal</td>
+                                                <td class="cartItems_total_amount">₹<span id="subtotal" class="font-lg fw-900 text-brand "> total</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="cartItems_total_label">Shipping</td>
+                                                <td class="cartItems_total_amount"> <i class="ti-gift mr-5"></i> Free Shipping</td>
+                                            </tr>
+                                            <tr>
+                                              <td class="cartItems_total_label">Discount Amount</td>
+                                              <td class="cartItems_total_amount" id="discountAmount"> <i class="ti-gift mr-5"></i> ₹0</td>
+                                          </tr>
+                                            <tr>
+                                                <td class="cartItems_total_label">Total</td>
+                                                <td class="cartItems_total_amount"><strong>₹<span id="total" class="font-xl fw-900 text-brand "> total</span></strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                   
+                                </div>
+                                <a href="/check_out" class="btn "> <i class="fi-rs-box-alt mr-10"></i> Proceed To CheckOut</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+
+
+
+
+</section>

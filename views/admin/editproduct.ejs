@@ -37,10 +37,21 @@
                         <div class="col-md-3">
                             <h6>Category</h6>
                         </div>
-                        <div class="col-md-9">
+                        <!-- <div class="col-md-9">
                             <label class="form-label">Mention the Category</label>
                             <input type="text" placeholder="Enter the Category" class="form-control" name="category" value="<%=forEditProduct.category%>" required>
-                        </div>
+                        </div> -->
+                        <div class="col-md-9">
+                            <label class="form-label">Select a Category</label>
+                            <select class="form-control" name="category" required>
+                              <% for (let i = 0; i < parentData.length; i++) { %>
+                                <option value="<%= parentData[i].category %>" <% if (parentData[i].category === forEditProduct.category) { %>selected<% } %>>
+                                  <%= parentData[i].category %>
+                                </option>
+                              <% } %>
+                            </select>
+                          </div>
+                          
                         <div class="col-md-9">
                            
                         </div>  <!--col.// -->

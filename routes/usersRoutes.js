@@ -59,11 +59,15 @@ router.get('/logout',userControllers.logout)
 //cart operations
 router.get('/cart',userControllers.authenticate,userControllers.showCart)
 
-//cart Operations
+// new cart Operations
+// router.get('/add_to_cart/:id',userControllers.authenticate, userControllers.getAddToCart)
+router.get('/view_cart', userControllers.authenticate, userControllers.getViewCart)
 
 
 
 
+
+//cart operations
 router.post('/products/addtocart/:id',userControllers.authenticate,userControllers.addToCart)
 router.get('/cart/removeitem/:id',userControllers.authenticate,userControllers.deleteCartItem)
 
@@ -110,7 +114,7 @@ router.post('/userCouponPost',userControllers.authenticate,userControllers.coupo
 
 router.get('/orderconfirm',userControllers.authenticate,userControllers.getorderPage);
 
- router.get('/order/details/:slug',userControllers.authenticate,userControllers.orderItemDetails)
+ router.get('/order/details/:id',userControllers.authenticate,userControllers.orderItemDetails)
 
 router.post('/order/details/cancel/:id',userControllers.authenticate,userControllers.orderCancel);
 

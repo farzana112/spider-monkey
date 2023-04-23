@@ -10,12 +10,12 @@ const instance = new Razorpay({
   
 module.exports = {
     generateRazorPay: async (orderId, total) => {
-        console.log("________________________________________________");
-        console.log(orderId);
+        
+        
         try {
             let order = await orderModel.findOne({'ordersList.id':orderId });
-            console.log(order)
-            // total = total * 100
+           
+             total = total * 100
             if(order){
                 let options = {
                     amount: parseInt(total),
@@ -23,7 +23,7 @@ module.exports = {
                     receipt: "" + orderId,
                 }
                 const orderResponse = await instance.orders.create(options);
-                console.log("Razor Pay Order"+orderResponse)
+               
                 return orderResponse;
             }
         } catch (err) {
