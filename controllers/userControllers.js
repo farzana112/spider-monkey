@@ -214,8 +214,7 @@ req.session.orderData=orderData
 
 
 req.session.itemData = itemData;
-console.log("orderItens");
-console.log(req.session.orderItems);
+
 
 
    res.render('user/profile',{layout:"layouts/userlayout",name,orderData,formatDate,convertOrderId,itemData:req.session.itemData,userData,addressData})
