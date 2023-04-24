@@ -357,7 +357,7 @@ function showCart(req, res) {
 
 async function addToCart(req, res) {
   let price = Number(req.body.price);
-  
+  console.log("price of the product"+price);
   const productToTheCart = {
     user: req.session.user.id,
     cartItems: {
@@ -367,13 +367,15 @@ async function addToCart(req, res) {
       prod: req.params.id,
     },
   };
-  console.log("product to the cart");
-  console.log(productToTheCart);
+  
   
   userHelpers.addCart(productToTheCart).then((cart) => {
     req.session.cartId = cart.id;
+    console.log("cartId");
+    console.log(req.session.cartId)
 
-    res.redirect(`/products/${req.params.id}`);
+
+    res.redirect('/cart')
   });
 }
 

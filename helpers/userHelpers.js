@@ -184,6 +184,8 @@ function clearItemData(req, res, next) {
 
 async function addCart(productToTheCart) {
   let cart = await cartModel.findOne({ user: productToTheCart.user });
+  console.log("after helpers")
+  console.log(cart)
 
   if (cart) {
     let product = productToTheCart.cartItems.prod;

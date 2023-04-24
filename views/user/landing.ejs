@@ -197,6 +197,7 @@
             <div class="swiper-wrapper">
                 <%for(var i = 0;i<productsData.length;i++){%>
                 <div class="swiper-slide">
+                    
                     <div class="product-wrap" data-aos="fade-up" data-aos-delay="200">
                         <div class="product-img img-zoom mb-25">
                             <a href="/products/<%=productsData[i].id%>">
@@ -211,15 +212,15 @@
                                     <!-- <i class="pe-7s-look"></i> -->
                                 <!-- </button> -->
                             </div>
-                            <div class="product-action-2-wrap">
-                                <button type="button" class="product-action-btn-2" title="Add To Cart" onclick="addtocart('<%-productsData[i].id%>'), Swal.fire({
+                            <!-- <div class="product-action-2-wrap">
+                                <button type="button" class="product-action-btn-2" title="Add To Cart" onclick="document.getElementById('addtocart').submit(), Swal.fire({
                                     position: 'center',
                                     icon: 'success',
                                     title: 'Item Added Successfully To Cart',
                                     showConfirmButton: false,
                                     timer: 2000
                                   })"><i class="pe-7s-cart"></i> Add to cart</button>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="product-content">
                             <h3><a href="/products/<%=productsData[i].id%>"><%= productsData[i].itemName%></a></h3>
