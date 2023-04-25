@@ -668,7 +668,8 @@ function postSort(req,res){
   
   const start=req.body['start']
   const end=req.body['end']
-  
+  console.log("strat"+start)
+  console.log("end" +end)
   userHelpers.sortPost(start,end).then((resultArray)=>{
      filterProducts=resultArray[0]
      filterParentData=resultArray[1]

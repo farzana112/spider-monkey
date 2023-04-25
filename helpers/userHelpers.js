@@ -503,72 +503,72 @@ async function address(newAddress) {
   }
 }
 
-// async function forProfilePage(user) {
+async function forProfilePage(user) {
   
 
-//   let userData = await userModel.findOne({ id: user.id });
+  let userData = await userModel.findOne({ id: user.id });
 
-//   let orderId = userData.order;
+  let orderId = userData.order;
 
-//   let addressId = userData.address;
+  let addressId = userData.address;
 
   
-//   let orders = await orderModel.findOne({ id: orderId });
+  let orders = await orderModel.findOne({ id: orderId });
 
-//   let addresses = await addressModel.findOne({ id: addressId });
+  let addresses = await addressModel.findOne({ id: addressId });
   
-// let addressData=addresses.addresses[0]
+let addressData=addresses.addresses[0]
 
-//   const orderData = [];
-//   const itemData = [];
-//   if (orders && orders.ordersList) {
-//   for ( var orderList of orders.ordersList) {
-//     let idAddress = orderList.address;
-
-
-//     const address = await addressModel.findOne({ "addresses.id": idAddress });
+  const orderData = [];
+  const itemData = [];
+  if (orders && orders.ordersList) {
+  for ( var orderList of orders.ordersList) {
+    let idAddress = orderList.address;
 
 
-//     const orderInfo = {
-//       id: orderList.id,
-//       user: user.name,
-//       items: orderList.items,
-//       totalPrice: orderList.totalPrice,
-//       orderStatus: orderList.orderStatus,
-//       address: address,
-//       createdAt: orderList.createdAt,
-//       modifiedAt: orderList.modifiedAt,
-//        cancellationrequest: orderList.cancellationrequest,
-//       // returnRequest: orderList.returnRequest,
-//     };
+    const address = await addressModel.findOne({ "addresses.id": idAddress });
 
-//     orderData.push(orderInfo);
 
-//     for ( orderItem of orderList.orderItems) {
-//       const eachItem = await productModel.findOne({ price: orderItem.price });
+    const orderInfo = {
+      id: orderList.id,
+      user: user.name,
+      items: orderList.items,
+      totalPrice: orderList.totalPrice,
+      orderStatus: orderList.orderStatus,
+      address: address,
+      createdAt: orderList.createdAt,
+      modifiedAt: orderList.modifiedAt,
+       cancellationrequest: orderList.cancellationrequest,
+      // returnRequest: orderList.returnRequest,
+    };
+
+    orderData.push(orderInfo);
+
+    for ( orderItem of orderList.orderItems) {
+      const eachItem = await productModel.findOne({ price: orderItem.price });
       
     
       
-//       if (eachItem) {
-//         const itemInfo = {
-//           itemName: eachItem.itemName,
-//           quantity: orderItem.quantity,
-//           price: orderItem.price,
-//           images: eachItem.images,
-//           description: eachItem.description,
-//         };
+      if (eachItem) {
+        const itemInfo = {
+          itemName: eachItem.itemName,
+          quantity: orderItem.quantity,
+          price: orderItem.price,
+          images: eachItem.images,
+          description: eachItem.description,
+        };
 
        
-//         itemData.push(itemInfo);
-//       } else {
-//         console.log(`Could not find product with id ${orderItem.id}`);
-//       }
-//     }
-//   }
-// }
+        itemData.push(itemInfo);
+      } else {
+        console.log(`Could not find product with id ${orderItem.id}`);
+      }
+    }
+  }
+}
 
-//   return { orderData,itemData,userData,addressData };
-// }
+  return { orderData,itemData,userData,addressData };
+}
 async function forProfilePage(user) {
   let userData = await userModel.findOne({ id: user.id });
   let orderId = userData?.order;
@@ -584,6 +584,7 @@ async function forProfilePage(user) {
     for (var orderList of orders.ordersList) {
       let idAddress = orderList.address;
       const address = await addressModel.findOne({ "addresses.id": idAddress });
+      for ( orderItem of orderList.orderItems){}
       const eachItem = await productModel.findOne({ price: orderItem.price });
 
       const orderInfo = {
@@ -811,9 +812,29 @@ async function searchPost(searchData) {
   }
 }
 
-async function sortPost(start, end){
-const products=  await productModel.find({ price: { $gte: start, $lte: end } })
+async function sortPost(startPrice, endPrice){
+  // console.log("start"+start)
+  // console.log("end"+end)
+  const start = parseFloat(startPrice);
+const end = parseFloat(endPrice);
 
+// const products=  await productModel.find({ price: { $gte: start, $lte: end } }).sort({ price: 1 })
+const products = await productModel.aggregate([
+  {
+    $match: {
+      $expr: {
+        $and: [
+          { $gte: [{ $toDouble: "$price" }, start] },
+          { $lte: [{ $toDouble: "$price" }, end] },
+        ],
+      },
+    },
+  },
+  { $sort: { price: 1 } },
+]);
+
+console.log("produts sorted")
+console.log(products)
 const parentData=await parentModel.find({})
 return [products,parentData]
 

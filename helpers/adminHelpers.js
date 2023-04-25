@@ -431,7 +431,7 @@ async function statusChange(orderId, status) {
           console.log("Error:", err);
           return err;
         } else {
-          console.log("Status changed:", result);
+          // console.log("Status changed:", result);
           return result;
         }
       });

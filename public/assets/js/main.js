@@ -340,14 +340,15 @@
             values: [0, 160],
             slide: function(event, ui) {
                 amountprice.val("₹"+ ui.values[0] + " - ₹" + ui.values[1]);
-
+                var start = Math.min(ui.values[0], ui.values[1]);
+                var end = Math.max(ui.values[0], ui.values[1]);
                 console.log(ui.values[0], ' - ' , ui.values[1])
                 $.ajax({
                     url: '/sort',
                     type:'post',
                     data:{
-                        start:ui.values[0],
-                        end: ui.values[1]
+                        start:start,
+                        end: end
                     }
                 }).done(res =>{
                     location.href="/sort"
