@@ -637,9 +637,7 @@ console.log(orderItems);
 
      }
       });
- console.log("new order");
-console.log(newOrder)
-console.log(newOrder.orderItems[0]);
+ 
   userHelpers.orderCreate(newOrder,req,res,dataOrder).then((orderId)=>{
 
   let orderid =orderId.orderId
