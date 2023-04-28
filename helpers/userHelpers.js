@@ -754,8 +754,7 @@ async function orderItems(orderId){
   console.log(prices);
   const matchingProducts = await productModel.find({ price: { $in: prices } });
 
-  console.log("matchingProducts:");
-  console.log(matchingProducts);
+  
   return [orderItems,matchingProducts]
 
 }
