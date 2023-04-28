@@ -63,7 +63,7 @@ router.get('/delete_category/:id',adminController.authenticate,adminController.d
 
 router.get('/addproduct',adminController.authenticate, adminController.layout,adminController.addProduct)
 
-  router.post('/addproduct',adminController.authenticate, adminController.layout, middlewares.uploads.array('images'), adminController.postProduct);
+  router.post('/addproduct',adminController.authenticate, adminController.layout, middlewares.uploads.array('images',4), adminController.postProduct);
 
  router.get('/view-product',adminController.authenticate,adminController.layout,adminController.getProducts)
 

@@ -1,3 +1,10 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-pnLlraAKg8Pqo3P9uHjtVfzE6uR7VUmkL4x4Q4jsIrlj5DNJyLdM9zS5V5M5Z/D8aZONWW4+VLmGQorFjKf5Vg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+      
+    
+
 <div class="cart-area pt-100 pb-100">
     <div class="container">
         <div class="row">
@@ -32,8 +39,21 @@
                                         </td>
                                         <td class="product-cart-price"><span class="amount"><%=cartItems[i].price%></span></td>
                                                                                 
-                                        <td class="product-cart-price"><span class="amount"><%=cartItems[i].quantity%></span></td>
-                                        <td class="product-total"><span><%=cartItems[i].subtotal%></span></td>
+                                    
+                                          <td class="text-center" data-title="Stock">
+                                              <div class="product-quality">
+                                                <a class="qty-down" onclick="changeQuantity(`<%=cartItems[i].itemName%>`,`<%=cartItems[i].product%>`,`<%=cartItems[i].price%>`, -1)">
+                                                    <span style="display: block; width: 20px; height: 20px; background-color: #333; color: #fff; text-align: center; line-height: 20px; cursor: pointer;">-</span>
+                                                </a>
+                                                <span class="qty-val" id="<%=cartItems[i].itemName%>"><%=cartItems[i].quantity%></span>
+                                                <a class="qty-up" onclick="changeQuantity(`<%=cartItems[i].itemName%>`,`<%=cartItems[i].product%>`,`<%=cartItems[i].price%>`, 1)">
+                                                    <span style="display: block; width: 20px; height: 20px; background-color: #333; color: #fff; text-align: center; line-height: 20px; cursor: pointer;">+</span>
+                                                </a>
+                                            </div>                                     
+                                           </td>
+                                            <!-- <td class="product-total"><span id="<%=cartItems[i].product%>"><%=cartItems[i].subtotal%></span></td> -->
+                                            <td class="product-total"><span id="<%=cartItems[i].product%>">₹<%=cartItems[i].subtotal%></span></td>
+
                                         <td class="product-remove"><a href="/cart/removeitem/<%=cartItems[i].id%>"><i class=" ti-trash "></i></a></td>
                                     </tr>
                                     
@@ -84,11 +104,11 @@
                        
                         
                         <div class="grand-total">
-                            <h4>Total <span>Rs<%=totalPrice%></span></h4>
+                            <h4>Total(₹) <span id="gtotal"><%=totalPrice%></span></h4>
                         </div>
                     </div>
                     <div class="grand-total-btn btn-hover">
-                        <a class="btn theme-color" href="/address">Proceed to checkout</a>
+                        <a class="btn theme-color" href="/checkout">Proceed to checkout</a>
                     </div>
                 </div>
             </div>
@@ -97,3 +117,125 @@
         </div>
     </div>
 </div>
+<script>
+
+
+
+
+
+function changeQuantity(pName,prodId,pcost,count) {
+    let total = document.getElementById("gtotal").innerHTML.toLocaleString("en-IN", {
+  style: "currency",
+  currency: "INR",
+});
+    
+    console.log(total,">>>>>>>>>>>>>>>>>>>>>>>>>>>")
+    let qnty = document.getElementById(pName).innerHTML
+    
+   let quantity
+console.log(qnty);
+    console.log("changeQuantity called");
+    console.log(pName);
+    console.log(prodId);
+
+    console.log("pcost",pcost);
+    
+    console.log("count",count);
+    if(count==1){
+
+         quantity = parseInt(document.getElementById(pName).innerHTML)+1 ;
+    }
+    else{
+         quantity = parseInt(document.getElementById(pName).innerHTML)-1 ;
+
+    }
+    if (quantity <= 0) {
+        // minimum quantity is 0
+        quantity = 1;
+    }
+    console.log("wuantity"+quantity);
+    //count = count;
+    if (quantity == 1) {
+      if (confirm("Do you want to remove this product from the cart?")) {
+        // remove product from the cart
+        $.ajax({
+          url: "/cart/removeProduct/"+prodId,
+          method:'DELETE',
+          data: {
+            product: prodId,
+          },
+          method: "post",
+          success: (response) => {
+           location.reload();
+          },
+        });
+        return;
+      } else {
+        // user clicked cancel, set quantity back to 1
+        quantity = 1;
+      }
+    }
+
+    
+    $.ajax({
+      url: '/cart/updateQuantity',
+      data: {   
+        product: prodId,
+        count: parseInt(count),
+        quantity: parseInt(quantity),
+        pCost:parseInt(pcost)
+      },
+      method: 'post',
+      success: (response) => {
+        
+        if(count==1)
+        {
+            console.log("<<<<<<<<<");
+            var subTotal=response.subtotal;
+            subTotal = Number(pcost) + subTotal
+           console.log(pcost
+           );
+          total=  document.getElementById("gtotal").innerHTML=Number(total)+Number(pcost)
+            
+            document.getElementById(pName).innerHTML=Number(qnty)+1
+        }
+       
+        else if(count==-1){
+            console.log("decrement>>>>>>>>>>");
+            var subTotal=response.subtotal;
+            subTotal =  Number(subTotal) - pcost
+           total= document.getElementById("gtotal").innerHTML=Number(total)-Number(pcost)
+            
+            // document.getElementById(pName).innerHTML=quantity-1
+            console.log(qnty);
+            document.getElementById(pName).innerHTML=Number(qnty)-1
+            console.log("1111111111");
+            console.log(Number(qnty)-1);
+        }
+       
+
+        if (response.removeProduct) {
+          alert("Product Removed From the Cart");
+          //location.reload();
+          location.window.replace('/showCart');
+        }
+
+  
+        else {
+            // let total=response.total
+            // let qty = response.p
+            // total=response.total+()
+            console.log("in success methhod");
+        //   document.getElementById(prod ).innerHTML = quantity + count
+        console.log("response",response);
+        console.log("response.subtotal",response.subtotal);
+        console.log("response.subtotal",response.total);
+console.log(prodId);
+          document.getElementById('gtotal').innerHTML =total;
+          document.getElementById(prodId).innerHTML =response.subtotal;
+        }
+      }
+    })
+  }
+
+</script>

@@ -104,7 +104,9 @@
                         <div class="col-md-9">
                             <div class="mb-4">
                                 <label class="form-label">Images</label>
-                                <input class="form-control" type="file" name="images" accept="image/*" multiple required onkeyup="validateImages()" >
+                                <!-- <input class="form-control" type="file" name="images" accept="image/*" multiple required onkeyup="validateImages()" > -->
+                                <input onchange="imagePreview(event)" class="form-control" type="file" name="images" multiple >
+
                                  <span class="error-message" id="image-errors" style="display:none;">Please enter a valid image.</span>
 
                             </div>
@@ -121,9 +123,44 @@
                         </div> <!-- col.//-->
                     </div> <!--.row end// -->
                 </div>
+               
             </div>
         </div>
+        <div class="col-lg-6">
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Media</h4>
+                </div>
+                <div class="card-body">
+                    <div class="input-upload">
+                        <img src="/imgs/theme/upload.svg" id="preview1" alt="Img">
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="input-upload">
+                        <img src="/imgs/theme/upload.svg" id="preview2" alt="Img">
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="input-upload">
+                        <img src="/imgs/theme/upload.svg" id="preview3" alt="Img">
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="input-upload">
+                        <img src="/imgs/theme/upload.svg" id="preview4" alt="Img">
+                    </div>
+                </div>
+                <hr class="mb-4 mt-0">
+                
+    
+            </div> 
+       
     </div>
+    </div>
+
+   
 
 </form>
 <span id="submit-error"></span>
@@ -185,5 +222,22 @@
 }
     return true;
 }
+
+function imagePreview(event) {
+  var files = event.target.files;
+  
+  for (var i = 0; i < files.length; i++) {
+    var reader = new FileReader();
+    reader.onload = (function(index) {
+      return function(e) {
+        var previewId = '#preview' + (index+1);
+        var previewElement = document.querySelector(previewId);
+        previewElement.src = e.target.result;
+      };
+    })(i);
+    reader.readAsDataURL(files[i]);
+  }
+}
+
 
 </script>

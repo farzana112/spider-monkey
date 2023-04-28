@@ -53,7 +53,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, "public/admin-assets")));
 app.use('/uploads',express.static(path.join(__dirname,'/uploads')))
 // db connection initializing
-db.connect();
+
 
 // initializing the routes
 app.use('/admin', adminRouter);
@@ -104,6 +104,13 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-
-
+const start = function () {
+  try {
+    db(process.env.URL)
+  }
+  catch (err) {
+    console.log(err);
+  }
+}
+start()
 module.exports = app;

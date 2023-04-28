@@ -69,9 +69,13 @@ router.get('/view_cart', userControllers.authenticate, userControllers.getViewCa
 
 //cart operations
 router.post('/products/addtocart/:id',userControllers.authenticate,userControllers.addToCart)
+router.post('/cart/updateQuantity', userControllers.updateQuantity);
+
 router.get('/cart/removeitem/:id',userControllers.authenticate,userControllers.deleteCartItem)
 
 router.get('/deletecart',userControllers.authenticate,userControllers.removeCart)
+
+router.post('/cart/removeProduct/:id',userControllers.deleteItem)
 
 //user profile
 

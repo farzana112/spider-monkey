@@ -428,6 +428,8 @@ function orderDetails(req,res){
     const orderData=data.order
     const addressData=data.address
     
+console.log("address data at controllers")
+console.log(addressData);
 
 
 

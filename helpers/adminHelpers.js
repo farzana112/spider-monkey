@@ -444,15 +444,39 @@ async function orderDetails(orderId) {
       { "ordersList.id": orderId },
       { "ordersList.$": 1 }
     );
+
     
     const Order = await orderModel.findOne({ "ordersList.id": orderId });
-   
+    console.log(Order)
+   console.log("address field from the order"+Order.address)
     let user = await userModel.findOne({ id: Order.customerId });
     
-    const address = await addressModel.findOne(
-      { user: Order.customerId },
-      { addresses: { $slice: 1 } }
-    );
+    
+const address = await addressModel.aggregate([{$match:
+{user:Order.customerId
+}},
+{
+  $unwind:"$addresses"
+},
+{
+  $project:{addresses:1}
+},
+{
+ $match:{"addresses.id":Order.ordersList[0].address} 
+}
+
+]);
+
+
+    // const address = await addressModel.findOne(
+    //   { user: Order.customerId },
+    //   { addresses: { $elemMatch: { id: Order.address } } }
+    // );
+
+    // const address = doc.addresses.find((a) => a.id === Order.address);
+    
+    console.log("address result of the aggregare")
+    console.log(address)
     
     if (address) {
       const addressCity = address.city;

@@ -230,9 +230,13 @@ async function addCart(productToTheCart) {
 async function viewCart(cartId) {
   let cart = await cartModel.findOne({ id: cartId }).populate({
     path: "cartItems.product",
-    select: "id itemName price images IsActive",
+    select: "id itemName price images _id",
   });
   let cartItems = [];
+
+  if (!cart) {
+    return [[], 0]; // return an empty cart and total price of 0 if cart does not exist
+  }
 
   cart.cartItems.forEach((item, index) => {
     cartItems[index] = {
@@ -246,6 +250,8 @@ async function viewCart(cartId) {
       subtotal: item.quantity * item.product.price,
     };
   });
+  console.log("cart quantity"+cartItems[0]?.price)
+
 
   let totalPrice = cart.cartItems.reduce(
     (total, item) => total + item.quantity * item.price,
@@ -270,96 +276,34 @@ async function removeCartItem(itemTodelete) {
   return removeItem;
 }
 
-
-
-
-
-//new cart
-
-// async function addToCart(proId,userId){
-//   console.log("A");
-//  let  proObj = {
-//     productId: proId,
-//     Quantity: 1,
-// };
-// let carts = await cartModel.findOne({ user: userId });
-
-//   if (carts) {
-//     let productExist = carts.cartItems.findIndex(
-//         (cartItems) => cartItems.product == proId
-//     );
-//     if (productExist != -1) {
-//         cartModel
-//             .updateOne(
-//                 { user: userId, "cartItems.product": proId },
-//                 {
-//                     $inc: { "cartItems.$.quantity": 1 },
-//                 }
-//             )
-//             .then(() => {
-//                 resolve();
-//             });
-//     } else {
-//         await cartModel
-//             .updateOne(
-//                 { user: userId },
-//                 {
-//                     $push: {
-//                         cartItems: proObj,
-//                     },
-//                 }
-//             )
-//             .then((response) => {
-//                 resolve(response);
-//             });
-//     }
-// }
-
-// }
-
-// async function addToCart(proId, userId) {
-//   console.log("A");
-//   const proObj = {
-//     productId: proId,
-//     quantity: 1,
-//   };
-//   try {
+async function deleteItem(itemId,cartId){
+  
+  try {
     
-//     const cart = await cartModel.findOne({ user: userId });
-//     if (cart) {
-//       const existingProductIndex = cart.cartItems.findIndex(
-//         (cartItem) => cartItem.product === proId
-//       );
-//       if (existingProductIndex !== -1) {
-//         await cartModel.updateOne(
-//           { user: userId, "cartItems.product": proId },
-//           { $inc: { "cartItems.$.quantity": 1 } }
-//         );
-       
-//         } else {
-//         await cartModel.updateOne(
-//           { user: userId },
-//           { $push: { cartItems: proObj } }
-//         );
-//       }
-//     } else {
-//       const newCart = new cartModel({
-//         user: userId,
-//         cartItems: [proObj],
-//       });
-//       await newCart.save();
-//     }
 
-//   let updatedCart = await cartModel.findOne({ user: userId }).populate("cartItems.product");
-//   console.log("updatedCart");
-//   console.log(updatedCart);
-// return
-   
-//   }catch (err) {
-//     console.error(err);
-//     throw new Error("Failed to add product to cart");
-//   }
-// }
+    console.log("the item id to be deleted"+itemId);
+    // const response = await cartModel.deleteOne({prod: itemId });
+    // console.log("deleted item"+response)
+//     const response = await cartModel.findOneAndDelete({prod: itemId});
+// console.log("deleted item:", response);
+const response = await cartModel.updateOne(
+  { id: cartId },
+  { $pull: { cartItems: { product: itemId } } }
+);
+console.log("deleted item:", response);
+ const cart=await cartModel.findOne({id:cartId})
+ console.log("cart after deletion"+cart)
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+
+}
+
+
+
+
 
 
 async function addWishlist(prodId,userId){
@@ -501,6 +445,15 @@ async function address(newAddress) {
 
     return newAddress.address;
   }
+}
+
+async function viewAddress(req,res){
+const userId=req.session.user.id
+  const address=await addressModel.find({user:userId})
+  const addresses=address[0].addresses
+  console.log("the address object that i got");
+  console.log(addresses)
+return addresses
 }
 
 async function forProfilePage(user) {
@@ -730,19 +683,25 @@ return await updateAddress.save();
 }
    
 
-async function orderCreate(order, req, res) {
+async function orderCreate(order, req, res,dataOrder) {
   let orderId;
   let totalPrice;
+ 
   let user = await userModel.findOne({ id: order.customerId });
 
-  if (user.order) {
+  if (user.order != null && user.order !== "null") {
     let updateOrder = await orderModel.findOneAndUpdate(
       { id: user.order },
-      { $push: { ordersList: order.ordersList } }
+      { 
+        "$push": { ordersList: order.ordersList } }
     );
+    
 
-    orderId = updateOrder.ordersList[updateOrder.ordersList.length - 1].id;
-    totalPrice = updateOrder.ordersList[updateOrder.ordersList.length - 1].totalPrice;
+    
+    orderId = updateOrder?.ordersList[updateOrder.ordersList.length - 1].id;
+    totalPrice = updateOrder?.ordersList[updateOrder.ordersList.length - 1].totalPrice;
+  
+    
   } else {
     const newOrder = await orderModel.create({
       id: order.id,
@@ -759,11 +718,15 @@ async function orderCreate(order, req, res) {
     );
   }
 
-  const clearCartafterOrder = clearCart();
+  const clearCartafterOrder = await  clearCart();
 
 
-  return { orderId, totalPrice };
+return new Promise((resolve, reject) => {
+  resolve({ orderId, totalPrice });
+});
 }
+
+
 
 
 async function cancelOrder(idCancel) {
@@ -772,11 +735,30 @@ async function cancelOrder(idCancel) {
     { $set: { "ordersList.$.cancellationrequest": true } }
   );
 
-  console.log(cancelOrder);
+  
   return cancelOrder;
 }
 
+async function orderItems(orderId){
+  const orderItems = await orderModel.aggregate([
+    { $match: { ordersList: { $elemMatch: { id: orderId } } } },
+    { $unwind: "$ordersList" },
+    { $match: { "ordersList.id": orderId } },
+    { $unwind: "$ordersList.orderItems" },
+    { $project: { _id: 0, orderItem: "$ordersList.orderItems" } }
+  ]);
+  
+  console.log(orderItems);
+  const prices = orderItems.map(orderItem => orderItem.orderItem.price);
+  console.log("prices")
+  console.log(prices);
+  const matchingProducts = await productModel.find({ price: { $in: prices } });
 
+  console.log("matchingProducts:");
+  console.log(matchingProducts);
+  return [orderItems,matchingProducts]
+
+}
 
 async function returnOrder(idReturn) {
   let retunrOrder = await orderModel.findOneAndUpdate(
@@ -893,9 +875,11 @@ module.exports = {
   viewCart,
   sendOTP,
   clearCart,
-  
+  orderItems,
   removeCartItem,
+  deleteItem,
   address,
+  viewAddress,
   forproducts,
   forProfilePage,
   addressAdd,

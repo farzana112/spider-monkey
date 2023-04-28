@@ -82,7 +82,7 @@ const mongoose = require("mongoose");
 // module.exports = mongoose.model('Order',orderSchema)
 
 const orderSchema = new mongoose.Schema({
-   customerName: String,
+  //  customerName: String,
   customerId: String,
   // contactNumber: Number,
   id: String,
@@ -127,7 +127,7 @@ const orderSchema = new mongoose.Schema({
       },
       paymentStatus: {
         type: Boolean,
-        default: false,
+        default: true,
       },
       returnrequest: {
         type: Boolean,
@@ -135,7 +135,7 @@ const orderSchema = new mongoose.Schema({
       },
       paymentmode:{
         type:String,
-        enum: ["cod", "razorpay", "paypal"],
+        required:true,
         default: "cod",
       }
     },

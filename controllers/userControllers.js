@@ -340,19 +340,25 @@ function showCart(req, res) {
   
   
   
-  if (cartId === null || cartId === undefined) {
+  if (cartId === null || cartId === undefined ) {
     let message = false;
     res.render("user/cart", { layout:"layouts/userlayout",message, name });
   } else {
     let message = true;
     userHelpers.viewCart(cartId).then((response) => {
       const [cartItems, totalPrice] = response;
-      req.session.cartItems = cartItems;
-      req.session.totalPrice = totalPrice;
+      // req.session.cartItems = cartItems;
+      // // console.log("cartItems  1111111111"+cartItems[0])
+
+      // req.session.totalPrice = totalPrice;
+      req.session.cartItems = cartItems ?? []; // provide an empty array as the default value
+      req.session.totalPrice = totalPrice ?? 0;
+      
       res.render("user/cart", { layout:"layouts/userlayout",cartItems, totalPrice, message, name });
     });
   }
 }
+
 
 async function addToCart(req, res) {
   let price = Number(req.body.price);
@@ -377,6 +383,84 @@ async function addToCart(req, res) {
     res.redirect('/cart')
   });
 }
+async function updateQuantity(req,res){
+ 
+   const pid = req.body.product; 
+   let qty = req.body.quantity;
+let count
+  
+
+   const pCost = req.body.pCost
+   console.log(req.body.quantity,req.body.count);
+  // const uEmail = req.session.userid.email;
+  let response={} ;
+  
+  let total=0;
+  response.subtotal=parseInt(pCost) *qty ;
+ // req.session.total
+
+   if (count == -1 && qty == 1) {
+   
+    
+     qty=1;
+    
+
+  } else {
+    console.log("else");
+    await Cart.updateOne(
+        {
+          
+          "cartItems.product": pid,
+        },
+        {
+          $inc: { "carItems.quantity": qty },
+          $set: { "cartItems.$.subtotal": response.subtotal }
+        }
+      )
+      .then((response) => {
+       
+      });
+  
+  let l=0;
+  
+ const cartId=req.session.cartId
+  let cart = await Cart.findOne({ id: cartId }).populate({
+    path: "cartItems.product",
+    select: "id itemName price images IsActive",
+  });
+  let cartItems = [];
+
+  cart.cartItems.forEach((item, index) => {
+    cartItems[index] = {
+      id: item.product.id,
+      itemName: item.product.itemName,
+      price: item.product.price,
+      images: item.product.images,
+      quantity: cart.cartItems[index].quantity,
+      product: item.product._id,
+      subtotal: item.quantity * item.product.price,
+    };
+  });
+  console.log(cartItems[0])
+  
+ 
+    let total=0;
+   
+  for(let i=0;i< cartItems.length;i++)
+  {
+       total=total+cartItems[i].subtotal;
+       
+  }
+       response.total=total;
+       req.session.totalPrice=total;
+     
+       res.json(response);
+  
+  // }  
+  }
+ 
+
+}
 
 function deleteCartItem(req, res) {
   let itemTodelete = req.params.id;
@@ -393,7 +477,16 @@ async function removeCart(req, res) {
   });
 }
 
-
+function deleteItem(req,res){
+  
+  const itemId=req.params.id
+  const cartId=req.session.cartId
+  
+   userHelpers.deleteItem(itemId,cartId).then((response) => {
+     res.json(response)
+     
+   })
+ }
 
 
 
@@ -417,10 +510,35 @@ function showWishList(req,res){
 
 
 function getAddressPage(req, res) {
-  res.render("user/address", { layout:"layouts/userlayout",name });
+  userHelpers.viewAddress(req,res).then((addresses)=>{
+     
+    console.log("addresses at getadress page"+addresses)
+    res.render("user/address", { layout:"layouts/userlayout",name ,addresses});
+  })
 }
+// function getAddressPage(req, res) {
+//   userHelpers.viewAddress(req,res).then((addresses)=>{
+
+//     console.log("addresses in get page: ", Array.isArray(addresses), addresses);
+
+//     // console.log("addresses in get page"+addresses)
+//     res.render("user/address", { layout:"layouts/userlayout", name }, (err) => {
+//       if (err) {
+//         console.error(err);
+//         res.status(500).send('Error rendering template');
+//       } else {
+//         res.end();
+//       }
+//     });
+//   }).catch((err) => {
+//     console.error(err);
+//     res.status(500).send('Error fetching addresses');
+//   });
+// }
+
 
 function postaddress(req, res) {
+  console.log
   const newAddress = {
     user: req.session.user.id,
     address: {
@@ -449,13 +567,21 @@ function postaddress(req, res) {
 //   Check-Out
 
 function getCheckoutPage(req, res) {
-  const totalPrice = req.session.totalPrice;
-  const address = req.session.Address;
-  const cartItems = req.session.cartItems;
-  const user=req.session.user;
-  
-  res.render("user/checkout", { layout:"layouts/userlayout",totalPrice, address, cartItems,name });
-}
+
+  userHelpers.viewAddress(req,res).then((addresses)=>{
+     
+    
+    const address=req.body.address
+    console.log("address from checkout page"+req.body)
+    const totalPrice = req.session.totalPrice;
+    // const address = req.session.Address;
+    const cartItems = req.session.cartItems;
+    const user=req.session.user;
+    
+    
+    res.render("user/checkout", { layout:"layouts/userlayout",totalPrice, addresses, cartItems,name });
+  })
+  }
 
 
 function clearItemData(req, res, next) {
@@ -463,23 +589,28 @@ function clearItemData(req, res, next) {
   delete req.session.itemData;
   next();
 }
-function postCheckOut(req, res) {
-  const customerName = req.session.Address.name;
+async function postCheckOut (req, res) {
+  
+  let dataOrder=req.body
+  let addressId=req.body.address
+  // const customerName = req.session.user.name
   let user=req.session.user;
  
   const customerId=req.session.user.id
 
-  const address = req.session.Address;
+  // const address = req.session.Address;
 
   const cartItems = req.session.cartItems;
 
   const totalPrice = req.session.totalPrice;
+  console.log(cartItems)
+  console.log("cart Itmes")
   const orderItems=cartItems.map(item=>{
     return{
       product:item.product,//_id
       price:item.price,
       quantity:item.quantity,
-      prod:item.id ,  //id
+      prod:item.id,  //id
       images:item.images
   }
 })
@@ -492,41 +623,43 @@ console.log(orderItems);
 
   
   const newOrder = new Order({
-    customerName,
+    
     customerId,
-    
-    
      id:uuid(),
      ordersList:{
       orderItems:orderItems,
-      address:address.id,
+      address:addressId,
       totalPrice:totalPrice ,
-      id:uuid()
+      id:uuid(),
+      paymentmode : req.body['payment_method'] === 'cod' ? 'cod' : 'razorpay'
   
 
 
      }
       });
- 
+ console.log("new order");
+console.log(newOrder)
+console.log(newOrder.orderItems[0]);
+  userHelpers.orderCreate(newOrder,req,res,dataOrder).then((orderId)=>{
 
-userHelpers.orderCreate(newOrder,req,res).then((orderId)=>{
   let orderid =orderId.orderId
   let total =orderId.totalPrice
-  
-  if(req.body['payment-method']=='COD'){
+   
+  if(req.body['payment_method']=='cod'){
+ 
+  res.render('user/orderconfirm',{layout:"layouts/userlayout"})}
 
-  res.render('user/orderconfirm',{layout:"layouts/userlayout",customerName})}
-
-  else if(req.body['payment-method']=='RazorPay'){
+  else if(req.body['payment_method']=='razorpay'){
    
 paymentControllers.generateRazorPay(orderid,total).then((order)=>{
   
-  res.render('user/rpay_checkout',{layout:"layouts/userlayout",customerName,order})
+  res.render('user/rpay_checkout',{layout:"layouts/userlayout",order})
 }).catch((err)=>{
   console.log(err);
 })
   }
 })
+
 }
 
 function validateCoupon(req,res){
@@ -543,31 +676,36 @@ function getorderPage(req, res) {
 
 
 
-function orderItemDetails(req,res){
+async function orderItemDetails(req,res){
 
-  const slug=req.params.id;
+  const orderId=req.params.id;
   const orderData=req.session.orderData
  
-  let itemData=req.session.itemData
+  // let itemData=req.session.itemData
   console.log("from order item details");
   console.log(req.session.orderItems);
   
   
-const idSlug = slugify(slug, { lower: true })
-  const orderIdAlias = 'my-order-id'
-  const orderDetails = orderData.find((order) => order.id == slug)
+const idSlug = slugify(orderId, { lower: true })
+  
+  const orderDetails =await orderData.find((order) => order.id == orderId)
 const user=req.session.user;
 const name=user.name
-
-  userHelpers.statusUpdate(orderData).then((orderData)=>{
-    console.log("itemData before deletion");
-    console.log(itemData);
+// const itemData=req.session.itemData
+const resultArray= await userHelpers.orderItems(orderId)
+const orderProducts=resultArray[0]
+const itemData=resultArray[1]
+console.log("order products")
+console.log(orderProducts);
+console.log("match prodtd");
+console.log(itemData);
+ await  userHelpers.statusUpdate(orderData).then((orderData)=>{
    
-console.log("item Data after the deletion");
-;
+   
+
+
     res.render('user/orderdetails',{layout:"layouts/userlayout",orderDetails,itemData,name,formatDate,convertOrderId,orderData})
-    itemData.length = 0; // clear the itemData array
-    console.log(itemData)
+   
   })
 
 
@@ -607,6 +745,9 @@ function addToWishlist(req,res){
   let prodId=req.params.id
  
    let userId=req.session.user.id
+
+   console.log("oruct iD"+prodId)
+   console.log("userID"+userId)
 
 
  userHelpers.addWishlist(prodId,userId).then(()=>{
@@ -819,6 +960,7 @@ module.exports = {
   sendAOTP,
   removeCart,
   deleteCartItem,
+  deleteItem,
   getAddressPage,
   postaddress,
   getCheckoutPage,
@@ -846,6 +988,7 @@ module.exports = {
   getSort,
   shopCategory,
   validateCoupon,
-  couponPost
+  couponPost,
+  updateQuantity
 
 };
