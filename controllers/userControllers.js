@@ -387,17 +387,20 @@ async function updateQuantity(req,res){
  
    const pid = req.body.product; 
    let qty = req.body.quantity;
-let count
   
-
+let count=req.body.count;
    const pCost = req.body.pCost
-   console.log(req.body.quantity,req.body.count);
+  // console.log(req.body.quantity,req.body.count);
   // const uEmail = req.session.userid.email;
   let response={} ;
   
   let total=0;
   response.subtotal=parseInt(pCost) *qty ;
  // req.session.total
+ console.log("pid",pid);
+ console.log("qty",qty);
+ console.log("pcost",pCost);
+ console.log("subtotal",response.subtotal);
 
    if (count == -1 && qty == 1) {
    
@@ -407,20 +410,21 @@ let count
 
   } else {
     console.log("else");
-    await Cart.updateOne(
+   await Cart.updateOne(
         {
           
           "cartItems.product": pid,
         },
         {
-          $inc: { "carItems.quantity": qty },
-          $set: { "cartItems.$.subtotal": response.subtotal }
+          
+          $set: { "cartItems.$.subtotal": response.subtotal , "cartItems.$.quantity": qty}
         }
       )
       .then((response) => {
-       
+       console.log(response);
+
       });
-  
+  //console.log("updated cart",updatedCart);
   let l=0;
   
  const cartId=req.session.cartId
@@ -428,7 +432,8 @@ let count
     path: "cartItems.product",
     select: "id itemName price images IsActive",
   });
-  let cartItems = [];
+ let cartItems = [];
+ //console.log();
 
   cart.cartItems.forEach((item, index) => {
     cartItems[index] = {
@@ -441,7 +446,7 @@ let count
       subtotal: item.quantity * item.product.price,
     };
   });
-  console.log(cartItems[0])
+  //console.log(cartItems[0])
   
  
     let total=0;
@@ -451,9 +456,10 @@ let count
        total=total+cartItems[i].subtotal;
        
   }
+  console.log(total);
        response.total=total;
        req.session.totalPrice=total;
-     
+     req.session.cartItems = cartItems
        res.json(response);
   
   // }  
@@ -567,15 +573,16 @@ function postaddress(req, res) {
 //   Check-Out
 
 function getCheckoutPage(req, res) {
-
+console.log(req.session);
   userHelpers.viewAddress(req,res).then((addresses)=>{
      
     
     const address=req.body.address
-    console.log("address from checkout page"+req.body)
+    // console.log("address from checkout page"+req.body)
     const totalPrice = req.session.totalPrice;
     // const address = req.session.Address;
     const cartItems = req.session.cartItems;
+    // const cartItems = Cart.find("id:req.session.cartId")
     const user=req.session.user;
     
     

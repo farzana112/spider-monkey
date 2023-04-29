@@ -183,6 +183,8 @@ function clearItemData(req, res, next) {
 }
 
 async function addCart(productToTheCart) {
+  console.log(productToTheCart);
+  console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
   let cart = await cartModel.findOne({ user: productToTheCart.user });
   console.log("after helpers")
   console.log(cart)
@@ -195,12 +197,18 @@ async function addCart(productToTheCart) {
         { id: cart.id, "cartItems.prod": productToTheCart.cartItems.prod },
         {
           $inc: { "cartItems.$.quantity": productToTheCart.cartItems.quantity },
+         
         }
       );
     } else {
+    let productToTheCart1 =productToTheCart
+    productToTheCart1.cartItems.subtotal =productToTheCart.cartItems.price
+
       let updateCart = await cartModel.updateOne(
         { id: cart.id },
-        { $push: { cartItems: productToTheCart.cartItems } }
+        { $push: { cartItems: productToTheCart1.cartItems } },
+      
+
       );
     }
     notifier.notify({
@@ -230,7 +238,7 @@ async function addCart(productToTheCart) {
 async function viewCart(cartId) {
   let cart = await cartModel.findOne({ id: cartId }).populate({
     path: "cartItems.product",
-    select: "id itemName price images _id",
+    select: "id itemName price images isActive",
   });
   let cartItems = [];
 
@@ -451,8 +459,7 @@ async function viewAddress(req,res){
 const userId=req.session.user.id
   const address=await addressModel.find({user:userId})
   const addresses=address[0].addresses
-  console.log("the address object that i got");
-  console.log(addresses)
+  
 return addresses
 }
 
@@ -703,6 +710,7 @@ async function orderCreate(order, req, res,dataOrder) {
   
     
   } else {
+    console.log("??????????");
     const newOrder = await orderModel.create({
       id: order.id,
       customerId: order.customerId,
